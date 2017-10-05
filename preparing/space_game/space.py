@@ -1,4 +1,4 @@
-import arcade
+import arcade, arcade.key
 
 from models import Ship, World
 
@@ -34,6 +34,9 @@ class SpaceGameWindow(arcade.Window):
 
     def update(self, delta):
         self.world.update(6)
+
+    def on_key_press(self, key, key_modifiers):
+        self.world.on_key_press(key, key_modifiers)
 
 if __name__ == '__main__':
     window = SpaceGameWindow(SCREEN_WIDTH, SCREEN_HEIGHT)

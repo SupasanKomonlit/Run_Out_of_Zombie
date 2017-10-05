@@ -8,6 +8,14 @@ if __name__ == '__main__' this is standard code for check that is main program o
     __init__ # this part set standare
     on_draw #this part use for write your window
     update # this part for update your code about many value
+    on_key_press # call this method when press keyboard
+    on_key_release # call this method when keyboard have been release
+    on_mouse_press # call mouse have press
+    on_mouse_motion # call when mouse have motion
+    on_mouse_release # call when mouse have been release
+
+Example about method key in on_key_press
+def on_key_press(self, key, key_modifiers):
 
 
 #import orther library
@@ -28,3 +36,5 @@ def <name_function>(type01,*type02,**type03):
     #so type01 is normal variable
     #next type02 is array variable
     #next type03 is list variable
+
+import arcade.key # when want to use key
