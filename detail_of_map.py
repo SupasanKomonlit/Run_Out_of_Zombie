@@ -15,7 +15,7 @@ class Map:
     def draw(self):
         for row in range(len(self.plan_map)):
             for column in range(len(self.plan_map[row])):
-                arcade.draw_rectangle_filled(column*self.width+self.width/2,row*self.hight+self.hight/2,self.width-1,self.hight-1,arcade.color.BLACK)
+                arcade.draw_rectangle_filled(column*self.width+self.width/2+1,row*self.hight+self.hight/2,self.width-1,self.hight-1,arcade.color.BLACK)
                 
 #    def on_key_press(self, key, key_modifiers):
 #        if key == arcade.key.SPACE:
