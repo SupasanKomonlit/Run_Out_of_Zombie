@@ -13,9 +13,17 @@ class Main_Character:
 
     def update(self, movement_x , movement_y):
         print("move is %i and %i"%(movement_x,movement_y))
-        if self.pos_x + movement_x > -1 and self.pos_x + movement_x < self.limit_x:
-            self.pos_x += movement_x 
-        if self.pos_y + movement_y > -1 and self.pos_y + movement_y < self.limit_y:
+        if self.pos_x + movement_x > -1 and self.pos_x + movement_x < self.limit_x and movement_x != 0:
+            self.pos_x += movement_x
+            self.check_map() 
+        elif self.pos_y + movement_y > -1 and self.pos_y + movement_y < self.limit_y and movement_y != 0:
             self.pos_y += movement_y
+            self.check_map() 
         self.real_x = 1 + self.pos_x*self.world.width + self.world.width/2
         self.real_y = 1 + self.pos_y*self.world.width + self.world.width/2
+
+    def check_map(self):
+        print("Welcome to check_map in Main_Character")
+        if self.world.plan_map[self.pos_y][self.pos_x] > 10:
+            print("That is switch")
+            self.world.open_or_close(self.world.plan_map[self.pos_y][self.pos_x])

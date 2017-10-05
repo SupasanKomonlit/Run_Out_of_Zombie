@@ -17,7 +17,7 @@ def random_position_trap(array_map):
         trap_x = random.randint(0,limit_x)
         trap_y = random.randint(0,limit_y)
         print("trap_x : {} trap_y : {}".format(trap_x,trap_y))
-        if(array_map[trap_y][trap_x] == 0):
+        if(array_map[trap_y][trap_x] != 1 and array_map[trap_y][trap_x] != 2):
             None
         else:
             continue
@@ -33,7 +33,7 @@ def print_map(text,array_map):
         row -= 1
 
 
-#value in map 1 : start  2 : finish 3 : zombie >10 : trap
+#value in map have 1:start  2:target 3:zombie 4:black_hole >10:switch
 class Map:
 
     def __init__(self, SCREEN_WIDTH, SCREEN_HIGHT, WIDTH, HIGHT, array_map , NUM_TRAP):
@@ -50,15 +50,31 @@ class Map:
         self.plan_map[len(self.plan_map)-1][len(self.plan_map[0])-1] = 2
         print_map("Print set up map",self.plan_map) # check map
         self.trap_keys = {}
+        self.trap = []
         for count in range(self.num_trap):
             print("count is {}".format(count))
             data = random_position_trap(self.plan_map)
             self.plan_map[data[1]][data[0]] = count+10
-            self.trap_keys[count+10] = [data[3],data[2],0]
+            self.trap_keys[count+11] = [data[3],data[2],0]
+            self.trap.append(arcade.Sprite("images/Black_Hole.png"))
+            self.trap[count].set_position(data[2]*self.width+1+self.width/2,data[3]*self.hight+1+self.hight/2)
         print_map("Print set up map after add trap",self.plan_map) # check map
         print(self.trap_keys) # 0 is row 1 is column 3 has two value 0 close 1 open
 
-                
+    def open_or_close(self, import_key):
+        data_of_key = self.trap_keys[import_key]
+        print(data_of_key)
+
+    def draw_trap(self):
+#        print("This is in draw_trap len(self.trap) is {}".format(self.trap))
+        number_of_trap = len(self.trap_keys)
+#        print(number_of_trap)
+        count = 0
+        while count < number_of_trap:
+            if self.trap_keys[count+11][2] == 1:
+                self.trap[count].draw()
+            count += 1
+        
     def draw_grid(self):
         for row in range(len(self.plan_map)):
             for column in range(len(self.plan_map[row])):

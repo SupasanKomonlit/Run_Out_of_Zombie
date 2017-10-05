@@ -24,8 +24,8 @@ class Game_Character(arcade.Sprite):
             self.set_position(self.knight.real_x, self.knight.real_y)
 
     def draw(self):
-            self.sync_with_model()
-            super().draw()
+        self.sync_with_model()
+        super().draw()
 
 class Game_Window(arcade.Window):
     def __init__(self, width, height):
@@ -48,6 +48,7 @@ class Game_Window(arcade.Window):
         arcade.start_render()
         self.map.draw_grid()
         self.knight_sprite.draw()
+        self.map.draw_trap()
 
     def on_key_press(self, key, key_modifiers):
         self.map.on_key_press(key, key_modifiers)
