@@ -54,7 +54,7 @@ class Map:
         for count in range(self.num_trap):
             print("count is {}".format(count))
             data = random_position_trap(self.plan_map)
-            self.plan_map[data[1]][data[0]] = count+10
+            self.plan_map[data[1]][data[0]] = count+11
             self.trap_keys[count+11] = [data[3],data[2],0]
             self.trap.append(arcade.Sprite("images/Black_Hole.png"))
             self.trap[count].set_position(data[2]*self.width+1+self.width/2,data[3]*self.hight+1+self.hight/2)
@@ -63,7 +63,18 @@ class Map:
 
     def open_or_close(self, import_key):
         data_of_key = self.trap_keys[import_key]
-        print(data_of_key)
+        same_target = []
+        for test_key in self.trap_keys.keys():
+            print("Test Key is {} and data is {}".format(test_key,self.trap_keys[test_key]))
+            if data_of_key[0] == self.trap_keys[test_key][0] and data_of_key[1] == self.trap_keys[test_key][1]:
+                same_target.append(test_key)
+                print("Collect key is {}".format(test_key))
+        sum_score = 1 
+        for collect_key in same_target:
+            sum_score += self.trap_keys[collect_key][2]
+            self.trap_keys[collect_key][2] = 0
+        sum_score = sum_score % 2
+        self.trap_keys[same_target[0]][2] = sum_score
 
     def draw_trap(self):
 #        print("This is in draw_trap len(self.trap) is {}".format(self.trap))
