@@ -11,6 +11,8 @@ HIGHT = 51
 SCREEN_WIDTH = NUM_COLUMN * WIDTH +1
 SCREEN_HIGHT = NUM_ROW * HIGHT +1
 
+NUM_TRAP = NUM_ROW*NUM_COLUMN*30//100
+
 class Game_Character(arcade.Sprite):
     def __init__(self, *location_of_picture, **character):
         self.knight = character.pop('knight', None)
@@ -36,7 +38,7 @@ class Game_Window(arcade.Window):
             for column in range(NUM_COLUMN):
                 self.setup_map[row].append(0)
 
-        self.map = Map(SCREEN_WIDTH,SCREEN_HIGHT,WIDTH,HIGHT,self.setup_map)
+        self.map = Map(SCREEN_WIDTH,SCREEN_HIGHT,WIDTH,HIGHT,self.setup_map,NUM_TRAP)
         self.knight_sprite = Game_Character('images/Knight.png',knight=self.map.knight)
 
 #    def update(self):
