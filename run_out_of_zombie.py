@@ -35,7 +35,6 @@ class Game_Window(arcade.Window):
             self.setup_map.append([])
             for column in range(NUM_COLUMN):
                 self.setup_map[row].append(0)
-        print(self.setup_map)
 
         self.map = Map(SCREEN_WIDTH,SCREEN_HIGHT,WIDTH,HIGHT,self.setup_map)
         self.knight_sprite = Game_Character('images/Knight.png',knight=self.map.knight)
@@ -45,7 +44,7 @@ class Game_Window(arcade.Window):
 
     def on_draw(self):
         arcade.start_render()
-        self.map.draw()
+        self.map.draw_grid()
         self.knight_sprite.draw()
 
     def on_key_press(self, key, key_modifiers):
