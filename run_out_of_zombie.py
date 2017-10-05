@@ -1,4 +1,4 @@
-import arcade
+import arcade, arcade.key
 
 from detail_of_map import Map
 
@@ -19,7 +19,7 @@ class Game_Character(arcade.Sprite):
 
     def sync_with_model(self):
         if self.knight:
-            self.set_position(self.knight.pos_x, self.knight.pos_y)
+            self.set_position(self.knight.real_x, self.knight.real_y)
 
     def draw(self):
             self.sync_with_model()
@@ -40,10 +40,16 @@ class Game_Window(arcade.Window):
         self.map = Map(SCREEN_WIDTH,SCREEN_HIGHT,WIDTH,HIGHT,self.setup_map)
         self.knight_sprite = Game_Character('images/Knight.png',knight=self.map.knight)
 
+#    def update(self):
+#        self.world.update()
+
     def on_draw(self):
         arcade.start_render()
         self.map.draw()
         self.knight_sprite.draw()
+
+    def on_key_press(self, key, key_modifiers):
+        self.map.on_key_press(key, key_modifiers)
 
 if __name__ == '__main__':
     window = Game_Window(SCREEN_WIDTH, SCREEN_HIGHT)
