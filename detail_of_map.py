@@ -1,5 +1,7 @@
 import arcade
 
+from detail_of_characters import Main_Character
+
 class Map:
     def __init__(self, SCREEN_WIDTH, SCREEN_HIGHT, WIDTH, HIGHT, array_map ):
         self.plan_map = array_map
@@ -7,6 +9,7 @@ class Map:
         self.hight = HIGHT
         self.widths = SCREEN_WIDTH
         self.hights = SCREEN_HIGHT
+        self.knight = Main_Character(self, self.width/2+1, self.hight/2 + 1)
         print("len(self.plan_map) is %i"%(len(self.plan_map)))
         print("len(self.plan_map[0]) is %i"%(len(self.plan_map[0])))
 
