@@ -10,6 +10,9 @@ if __name__ == '__main__' this is standard code for check that is main program o
     update # this part for update your code about many value
 
 
+#import orther library
+from <name_of_file> import <name_of_class_for_using>
+
 arcade.set_background_color(<Your colour>)
 
 self.<name> = arcade.Sprite("<Location of picture file>") set images
@@ -18,3 +21,10 @@ self.<name>.set_position(x,y)   # set postion of you sprite
 self.<name>.draw() # draw your sprite and write this part in def on_draw
 
 <variable> = self.<name> you can set variable instead use self.<name>
+
+aboout how to send variable:
+
+def <name_function>(type01,*type02,**type03):
+    #so type01 is normal variable
+    #next type02 is array variable
+    #next type03 is list variable
