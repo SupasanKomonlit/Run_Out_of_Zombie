@@ -10,17 +10,24 @@ HIGHT = 51
 
 SCREEN_WIDTH = NUM_COLUMN * WIDTH +1
 SCREEN_HIGHT = NUM_ROW * HIGHT +1
-
-NUM_TRAP = NUM_ROW*NUM_COLUMN*90//100
+NUM_TRAP = 0
+if SCREEN_WIDTH*SCREEN_HIGHT >=50:
+    NUM_TRAP = NUM_ROW*NUM_COLUMN*95//100
+else:
+    NUM_TRAP = SCREEN_WIDTH*SCREEN_HIGHT - 5
+NUM_ZOMBIE = NUM_ROW*NUM_COLUMN*25//100
 
 class Game_Character(arcade.Sprite):
     def __init__(self, *location_of_picture, **character):
         self.knight = character.pop('knight', None)
+#        self.zombie = character.pop('zombie',None)
         super().__init__(*location_of_picture, **character)
 
     def sync_with_model(self):
         if self.knight:
             self.set_position(self.knight.real_x, self.knight.real_y)
+#        elif self.zombie:
+#            self.set_position(self.zombie.real_x, self.zombie.real_y)
 
     def draw(self):
         self.sync_with_model()
@@ -37,9 +44,13 @@ class Game_Window(arcade.Window):
             for column in range(NUM_COLUMN):
                 self.setup_map[row].append(0)
 
-        self.map = Map(SCREEN_WIDTH,SCREEN_HIGHT,WIDTH,HIGHT,self.setup_map,NUM_TRAP)
+        self.map = Map(SCREEN_WIDTH,SCREEN_HIGHT,WIDTH,HIGHT,self.setup_map,NUM_TRAP,NUM_ZOMBIE)
+#        self.zombie_sprite = []
         self.knight_sprite = Game_Character('images/Knight.png',knight=self.map.knight)
-
+#        for count in range(NUM_ZOMBIE):
+#            self.zombie_sprite.append(Game_Character('images/Zombie_01.png',zombie=self.map.zombie)) 
+                        
+            
     def update(self, data):
 #        print("Update_in_Game_Window")
         if self.map.knight.status == 2:
@@ -65,6 +76,9 @@ class Game_Window(arcade.Window):
             self.map.draw_grid()
             self.knight_sprite.draw()
             self.map.draw_trap()
+            self.map.draw_zombie()
+#            for count in range(NUM_ZOMBIE):
+#                self.zombie_sprite[count].draw()
         elif self.current_state == "you_win":
             self.draw_win_game()
         elif self.current_state == "you_lose":
