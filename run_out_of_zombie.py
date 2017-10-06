@@ -70,9 +70,13 @@ class Game_Window(arcade.Window):
 
     def draw_lose_game(self):
         output = "Game Over!!!"
-        arcade.draw_text(output, SCREEN_WIDTH/8+SCREEN_WIDTH/13, SCREEN_HIGHT/2, arcade.color.RED, 60)
+        arcade.draw_text(output, SCREEN_WIDTH/8+SCREEN_WIDTH/13, SCREEN_HIGHT/2+20, arcade.color.RED, 60)
         output = "You Lose"
-        arcade.draw_text(output, SCREEN_WIDTH/3-SCREEN_WIDTH/20, SCREEN_HIGHT/2-80, arcade.color.RED, 60)
+        arcade.draw_text(output, SCREEN_WIDTH/3-SCREEN_WIDTH/20, SCREEN_HIGHT/2-60, arcade.color.RED, 60)
+        if self.map.knight.status == 3:
+            arcade.draw_text("Dead by Black Hole", SCREEN_WIDTH/3-SCREEN_WIDTH/9, SCREEN_HIGHT/2-120, arcade.color.RED, 40)
+        elif self.map.knight.status == 4:
+            arcade.draw_text("Dead by Zombie", SCREEN_WIDTH/3-SCREEN_WIDTH/15, SCREEN_HIGHT/2-120, arcade.color.RED, 40)
 
     def on_draw(self):
         arcade.start_render()

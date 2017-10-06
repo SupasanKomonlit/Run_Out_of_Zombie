@@ -24,16 +24,18 @@ class Main_Character:
             self.check_zombie_on_map()
             self.world.update_zombie() 
             self.check_zombie_on_map() 
+            self.round += 1
+            print("----------finish round {:>3.0f}----------".format(self.round))
         elif self.pos_y + movement_y > -1 and self.pos_y + movement_y < self.limit_y and movement_y != 0:
             self.pos_y += movement_y
             self.check_map() 
             self.check_zombie_on_map() 
             self.world.update_zombie() 
             self.check_zombie_on_map() 
+            self.round += 1
+            print("----------finish round {:>3.0f}----------".format(self.round))
         self.real_x = 1 + self.pos_x*self.world.width + self.world.width/2
         self.real_y = 1 + self.pos_y*self.world.hight + self.world.hight/2
-        self.round += 1
-        print("----------finish round {:>3.0f}----------".format(self.round))
 
     def check_map(self):
         print("Welcome to check_map in Main_Character")
