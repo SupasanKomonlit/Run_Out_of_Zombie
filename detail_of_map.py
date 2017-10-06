@@ -109,10 +109,10 @@ class Map:
         data_of_key = self.trap_keys[import_key]
         same_target = []
         for test_key in self.trap_keys.keys():
-            print("Test Key is {} and data is {}".format(test_key,self.trap_keys[test_key]))
+#            print("Test Key is {} and data is {}".format(test_key,self.trap_keys[test_key]))
             if data_of_key[0] == self.trap_keys[test_key][0] and data_of_key[1] == self.trap_keys[test_key][1]:
                 same_target.append(test_key)
-                print("Collect key is {}".format(test_key))
+#                print("Collect key is {}".format(test_key))
         sum_score = 1 
         for collect_key in same_target:
             sum_score += self.trap_keys[collect_key][2]
@@ -120,11 +120,22 @@ class Map:
         sum_score = sum_score % 2
         self.trap_keys[same_target[0]][2] = sum_score
 
+# Update all zombie
+    def update_zombie(self):
+        for count in range(len(self.zombie)):
+            self.zombie[count].update()   
+            self.knight.check_black_hole()
+
+# Draw all zombie
     def draw_zombie(self):
-#        print("Draw Zombie")
         for count in range(len(self.zombie)):
             if self.zombie[count].status == 1:
                 self.zombie[count].draw()
+# Check all black hole for Zombie
+    def check_only_black_hole(self):
+        for count in range(len(self.zombie)):
+            if self.zombie[count].status == 1:
+                self.zombie[count].check_black_hole()
 
     def draw_trap(self):
 #        print("This is in draw_trap len(self.trap) is {}".format(self.trap))

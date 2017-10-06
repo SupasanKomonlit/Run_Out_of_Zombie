@@ -16,7 +16,7 @@ if SCREEN_WIDTH*SCREEN_HIGHT >=50:
 else:
     NUM_TRAP = SCREEN_WIDTH*SCREEN_HIGHT - 5
 NUM_ZOMBIE = NUM_ROW*NUM_COLUMN*20//100
-
+#NUM_ZOMBIE = 2
 class Game_Character(arcade.Sprite):
     def __init__(self, *location_of_picture, **character):
         self.knight = character.pop('knight', None)
@@ -55,7 +55,11 @@ class Game_Window(arcade.Window):
 #        print("Update_in_Game_Window")
         if self.map.knight.status == 2:
             self.current_state = "you_win"
-        elif self.map.knight.status == 3:
+        elif self.map.knight.status == 3 :
+            print("Dead by Black Hole")
+            self.current_state = "you_lose"
+        elif self.map.knight.status == 4 :
+            print("Dead by Zombie")
             self.current_state = "you_lose"
 
     def draw_win_game(self):
