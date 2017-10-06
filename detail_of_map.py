@@ -25,11 +25,11 @@ def random_position_trap(array_map):
 
 def random_start_position_of_zombie(zombie_map):
     while True:
-        random_x = random.randint(0,len(zombie_map)-1)
-        random_y = random.randint(0,len(zombie_map[0])-1)
-        if (random_x < 3 and random_y < 3) or (random_x == len(zombie_map)-1 and random_y == len(zombie_map[0])-1):
+        random_x = random.randint(0,len(zombie_map[0])-1)
+        random_y = random.randint(0,len(zombie_map)-1)
+        if (random_x < 3 and random_y < 3) or (random_x == len(zombie_map[0])-1 and random_y == len(zombie_map)-1):
             continue
-        if zombie_map[random_x][random_y] == 0:
+        if zombie_map[random_y][random_x] == 0:
             return random_x, random_y
 
 def print_map(text,array_map):
@@ -98,7 +98,7 @@ class Map:
             print("Data is ", end = " ")
             print(data)
             self.zombie.append(Zombie_Character(self, data[0], data[1]))
-            self.zombie_map[data[0]][data[1]] = 1
+            self.zombie_map[data[1]][data[0]] = 1
 
         print_map("Print set up map after add trap",self.plan_map) # check map
         print_key("Print key of trap",self.trap_keys) # 0 is row 1 is column 3 has two value 0 close 1 open
