@@ -15,7 +15,7 @@ if SCREEN_WIDTH*SCREEN_HIGHT >=50:
     NUM_TRAP = NUM_ROW*NUM_COLUMN*95//100
 else:
     NUM_TRAP = SCREEN_WIDTH*SCREEN_HIGHT - 5
-NUM_ZOMBIE = NUM_ROW*NUM_COLUMN*25//100
+NUM_ZOMBIE = NUM_ROW*NUM_COLUMN*20//100
 
 class Game_Character(arcade.Sprite):
     def __init__(self, *location_of_picture, **character):
