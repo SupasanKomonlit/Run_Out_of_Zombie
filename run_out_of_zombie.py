@@ -11,7 +11,7 @@ HIGHT = 51
 SCREEN_WIDTH = NUM_COLUMN * WIDTH +1
 SCREEN_HIGHT = NUM_ROW * HIGHT +1
 
-NUM_TRAP = NUM_ROW*NUM_COLUMN*50//100
+NUM_TRAP = NUM_ROW*NUM_COLUMN*80//100
 
 class Game_Character(arcade.Sprite):
     def __init__(self, *location_of_picture, **character):
@@ -44,12 +44,20 @@ class Game_Window(arcade.Window):
 #        print("Update_in_Game_Window")
         if self.map.knight.status == 2:
             self.current_state = "you_win"
+        elif self.map.knight.status == 3:
+            self.current_state = "you_lose"
 
     def draw_win_game(self):
         output = "Congraturation!!!"
         arcade.draw_text(output, SCREEN_WIDTH/8, SCREEN_HIGHT/2, arcade.color.RED, 60)
         output = "You Win"
         arcade.draw_text(output, SCREEN_WIDTH/3, SCREEN_HIGHT/2-80, arcade.color.RED, 60)
+
+    def draw_lose_game(self):
+        output = "Game Over!!!"
+        arcade.draw_text(output, SCREEN_WIDTH/8+SCREEN_WIDTH/13, SCREEN_HIGHT/2, arcade.color.RED, 60)
+        output = "You Lose"
+        arcade.draw_text(output, SCREEN_WIDTH/3-SCREEN_WIDTH/20, SCREEN_HIGHT/2-80, arcade.color.RED, 60)
 
     def on_draw(self):
         arcade.start_render()
@@ -59,6 +67,8 @@ class Game_Window(arcade.Window):
             self.map.draw_trap()
         elif self.current_state == "you_win":
             self.draw_win_game()
+        elif self.current_state == "you_lose":
+            self.draw_lose_game()
 
     def on_key_press(self, key, key_modifiers):
         self.map.on_key_press(key, key_modifiers)

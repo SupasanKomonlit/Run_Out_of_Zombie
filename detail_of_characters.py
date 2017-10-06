@@ -33,4 +33,13 @@ class Main_Character:
 # Check about target
         elif self.world.plan_map[self.pos_y][self.pos_x] == 2:
             print("You win")
-            self.status = 2         
+            self.status = 2
+        for test_key in self.world.trap_keys.keys():
+            if self.world.trap_keys[test_key][0] == self.pos_y and self.world.trap_keys[test_key][1] == self.pos_x:
+                print("this position have black hole")
+                if self.world.trap_keys[test_key][2] == 1:
+                    print("you are dead")
+                    self.status = 3
+                else:
+                    None
+                break         
