@@ -10,6 +10,8 @@ class Main_Character:
         self.limit_x = len(self.world.plan_map[0])
         self.limit_y = len(self.world.plan_map)
         print("limit is %i and %i"%(self.limit_x,self.limit_y))
+        self.status = 1
+# assign status 1 is alive 2 is winner 3 is die
 
     def update(self, movement_x , movement_y):
         print("move is %i and %i"%(movement_x,movement_y))
@@ -24,6 +26,11 @@ class Main_Character:
 
     def check_map(self):
         print("Welcome to check_map in Main_Character")
+# Check about switch
         if self.world.plan_map[self.pos_y][self.pos_x] > 10:
             print("That is switch")
             self.world.open_or_close(self.world.plan_map[self.pos_y][self.pos_x])
+# Check about target
+        elif self.world.plan_map[self.pos_y][self.pos_x] == 2:
+            print("You win")
+            self.status = 2         
