@@ -11,7 +11,7 @@ HIGHT = 51
 SCREEN_WIDTH = NUM_COLUMN * WIDTH +1
 SCREEN_HIGHT = NUM_ROW * HIGHT +1
 
-NUM_TRAP = NUM_ROW*NUM_COLUMN*80//100
+NUM_TRAP = NUM_ROW*NUM_COLUMN*90//100
 
 class Game_Character(arcade.Sprite):
     def __init__(self, *location_of_picture, **character):
