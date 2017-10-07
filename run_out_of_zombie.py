@@ -10,11 +10,15 @@ HIGHT = 51
 
 SCREEN_WIDTH = NUM_COLUMN * WIDTH +1
 SCREEN_HIGHT = NUM_ROW * HIGHT +1
-NUM_TRAP = 0
+
 if SCREEN_WIDTH*SCREEN_HIGHT >=50:
-    NUM_TRAP = NUM_ROW*NUM_COLUMN*95//100
+    NUM_TRAP = NUM_ROW*NUM_COLUMN*80//100
+    NUM_TRAP += NUM_TRAP%6
 else:
     NUM_TRAP = SCREEN_WIDTH*SCREEN_HIGHT - 5
+
+NUM_WALL = NUM_ROW*NUM_COLUMN*80//100
+
 NUM_ZOMBIE = NUM_ROW*NUM_COLUMN*20//100
 #NUM_ZOMBIE = 2
 class Game_Character(arcade.Sprite):
@@ -44,7 +48,7 @@ class Game_Window(arcade.Window):
             for column in range(NUM_COLUMN):
                 self.setup_map[row].append(0)
 
-        self.map = Map(SCREEN_WIDTH,SCREEN_HIGHT,WIDTH,HIGHT,self.setup_map,NUM_TRAP,NUM_ZOMBIE)
+        self.map = Map(SCREEN_WIDTH,SCREEN_HIGHT,WIDTH,HIGHT,self.setup_map,NUM_TRAP,NUM_ZOMBIE,NUM_WALL)
 #        self.zombie_sprite = []
         self.knight_sprite = Game_Character('images/Knight.png',knight=self.map.knight)
 #        for count in range(NUM_ZOMBIE):
@@ -82,6 +86,7 @@ class Game_Window(arcade.Window):
         arcade.start_render()
         if self.current_state == "game_running":
             self.map.draw_grid()
+            self.map.draw_wall()
             self.knight_sprite.draw()
             self.map.draw_trap()
             self.map.draw_zombie()

@@ -1,4 +1,4 @@
-import arcade, arcade.key, random
+import arcade, arcade.key, random #, time
 
 from detail_of_characters import Main_Character, Zombie_Character
 
@@ -41,6 +41,20 @@ def print_map(text,array_map):
         print()
         row -= 1
 
+def print_map_array(text,array_map):
+    print(text)
+    row = len(array_map) - 1
+    while row > -1:
+        for column in range(len(array_map[row])):
+            for count in range(len(array_map[row][column])):
+                if count == len(array_map[row][column])-1:
+                    print(array_map[row][column][count], end ="")
+                else:
+                    print(array_map[row][column][count], end =":")
+            print("  ", end = "")
+        print()
+        row -= 1
+
 def print_key(text,dictionary):
     print(text)
     limit_per_line = 6
@@ -55,7 +69,7 @@ def print_key(text,dictionary):
 #value in map have 1:start  2:target 3:zombie 4:black_hole >10:switch
 class Map:
 
-    def __init__(self, SCREEN_WIDTH, SCREEN_HIGHT, WIDTH, HIGHT, array_map , NUM_TRAP, NUM_ZOMBIE):
+    def __init__(self, SCREEN_WIDTH, SCREEN_HIGHT, WIDTH, HIGHT, array_map , NUM_TRAP, NUM_ZOMBIE, NUM_WALL):
 #preparing variable
         self.plan_map = array_map
         self.width = WIDTH
@@ -66,6 +80,7 @@ class Map:
         self.zombie = []
         self.num_trap = NUM_TRAP
         self.num_zombie = NUM_ZOMBIE
+        self.num_wall = NUM_WALL
         print("len(self.plan_map) is %i"%(len(self.plan_map)))
         print("len(self.plan_map[0]) is %i"%(len(self.plan_map[0])))
 
@@ -103,6 +118,36 @@ class Map:
         print_map("Print set up map after add trap",self.plan_map) # check map
         print_key("Print key of trap",self.trap_keys) # 0 is row 1 is column 3 has two value 0 close 1 open
         print_map("Print set up map of zombie after add zombie",self.zombie_map) # check zombie map
+
+#Set Wall postiton 1 is right position 2 is up position 3 is down position 4 is left
+        self.wall_map = []
+        for row in range(len(self.plan_map)):
+            self.wall_map.append([])
+            for column in range(len(self.plan_map[row])):
+                self.wall_map[row].append([0,0,0,0])
+                if row == 0:
+                    self.wall_map[row][column][2] = 1
+                elif row == len(self.plan_map)-1:
+                    self.wall_map[row][column][1] = 1
+                if column == 0:
+                    self.wall_map[row][column][0] = 1
+                elif column == len(self.plan_map[row])-1:
+                    self.wall_map[row][column][3] = 1
+        print_map_array("Print set up wall map",self.wall_map) # check wall map
+
+#Draw wall
+    def draw_wall(self):
+        for row in range(len(self.wall_map)):
+            for column in range(len(self.wall_map[row])):
+                for count in range(len(self.wall_map[row][column])):
+                    if(self.wall_map[row][column][count] == 1 and count == 0):
+                        arcade.draw_line(column*self.width+1,row*self.hight+1,column*self.width+1,(row+1)*self.hight+1,arcade.color.BRICK_RED,2)  
+                    if(self.wall_map[row][column][count] == 1 and count == 3):
+                        arcade.draw_line((column+1)*self.width,row*self.hight+1,(column+1)*self.width,(row+1)*self.hight+1,arcade.color.BRICK_RED,2)  
+                    if(self.wall_map[row][column][count] == 1 and count == 1):
+                        arcade.draw_line(column*self.width+1,(row+1)*self.hight+1,(column+1)*self.width+1,(row+1)*self.hight+1,arcade.color.BRICK_RED,2)  
+                    if(self.wall_map[row][column][count] == 1 and count == 2):
+                        arcade.draw_line(column*self.width+1,row*self.hight+1,(column+1)*self.width+1,row*self.hight+1,arcade.color.BRICK_RED,2)  
         
 # Open or Close Trap
     def open_or_close(self, import_key):
@@ -131,6 +176,7 @@ class Map:
         for count in range(len(self.zombie)):
             if self.zombie[count].status == 1:
                 self.zombie[count].draw()
+#                time.sleep(1)
 # Check all black hole for Zombie
     def check_only_black_hole(self):
         for count in range(len(self.zombie)):
