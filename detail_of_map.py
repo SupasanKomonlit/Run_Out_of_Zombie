@@ -1,7 +1,8 @@
-import arcade, arcade.key, random #, time
+import arcade, arcade.key, random , time
 
 from detail_of_characters import Main_Character, Zombie_Character
 
+# random trap and key of trap
 def random_position_trap(array_map):
     limit_y = len(array_map) - 1
     limit_x = len(array_map[0]) -1 
@@ -23,6 +24,7 @@ def random_position_trap(array_map):
             continue
         return switch_x, switch_y, trap_x, trap_y
 
+# random postion of zombie when start
 def random_start_position_of_zombie(zombie_map):
     while True:
         random_x = random.randint(0,len(zombie_map[0])-1)
@@ -32,6 +34,47 @@ def random_start_position_of_zombie(zombie_map):
         if zombie_map[random_y][random_x] == 0:
             return random_x, random_y
 
+# random the wall
+def random_position_of_wall(wall_map):
+    while True:
+        random_x = random.randint(0,len(wall_map[0])-1)
+        random_y = random.randint(0,len(wall_map)-1)
+        if (random_x == 0 and random_y == 0) or (random_x == len(wall_map[0])-1 and random_y == len(wall_map)-1):
+            continue
+        count = 0
+        for wall in wall_map[random_y][random_x]:
+            count += wall
+        if count > 2:
+            continue
+        random_wall = random.randint(1,100)%4
+        if wall_map[random_y][random_x][random_wall] == 1:
+            continue
+        if random_wall == 0 and random_x != 0:
+            count = 0
+            for wall in wall_map[random_y][random_x-1]:
+                count += wall
+            if count > 2:
+                continue
+        elif random_wall == 3 and random_x != len(wall_map[0])-1:
+            count = 0
+            for wall in wall_map[random_y][random_x+1]:
+                count += wall
+            if count > 2:
+                continue
+        elif random_wall == 1 and random_y != len(wall_map)-1:
+            count = 0
+            for wall in wall_map[random_y+1][random_x]:
+                count += wall
+            if count > 2:
+                continue
+        elif random_wall == 2 and random_y != 0:
+            count = 0
+            for wall in wall_map[random_y-1][random_x-1]:
+                count += wall
+            if count > 2:
+                continue
+        return random_x, random_y, random_wall
+        
 def print_map(text,array_map):
     print(text)
     row = len(array_map) - 1
@@ -81,6 +124,7 @@ class Map:
         self.num_trap = NUM_TRAP
         self.num_zombie = NUM_ZOMBIE
         self.num_wall = NUM_WALL
+        self.set_up = 1
         print("len(self.plan_map) is %i"%(len(self.plan_map)))
         print("len(self.plan_map[0]) is %i"%(len(self.plan_map[0])))
 
@@ -115,10 +159,6 @@ class Map:
             self.zombie.append(Zombie_Character(self, data[0], data[1]))
             self.zombie_map[data[1]][data[0]] = 1
 
-        print_map("Print set up map after add trap",self.plan_map) # check map
-        print_key("Print key of trap",self.trap_keys) # 0 is row 1 is column 3 has two value 0 close 1 open
-        print_map("Print set up map of zombie after add zombie",self.zombie_map) # check zombie map
-
 #Set Wall postiton 1 is right position 2 is up position 3 is down position 4 is left
         self.wall_map = []
         for row in range(len(self.plan_map)):
@@ -134,6 +174,23 @@ class Map:
                 elif column == len(self.plan_map[row])-1:
                     self.wall_map[row][column][3] = 1
         print_map_array("Print set up wall map",self.wall_map) # check wall map
+        for count in range(self.num_wall):
+            data = random_position_of_wall(self.wall_map)
+            print(data)
+            self.wall_map[data[1]][data[0]][data[2]] = 1
+            if data[2] == 0 and data[0] != 0:
+                self.wall_map[data[1]][data[0]-1][3] = 1    
+            elif data[2] == 3 and data[0] != len(self.wall_map[0])-1 :
+                self.wall_map[data[1]][data[0]+1][0] = 1
+            elif data[2] == 1 and data[1] != len(self.wall_map)-1:
+                self.wall_map[data[1]+1][data[0]][2] = 1
+            elif data[2] == 2 and data[1] != 0:
+                self.wall_map[data[1]-1][data[0]][1] = 1 
+
+        print_map("Print set up map after add trap",self.plan_map) # check map
+        print_key("Print key of trap",self.trap_keys) # 0 is row 1 is column 3 has two value 0 close 1 open
+        print_map("Print set up map of zombie after add zombie",self.zombie_map) # check zombie map
+        print_map_array("Print set up wall map after add wall",self.wall_map) # check wall map
 
 #Draw wall
     def draw_wall(self):
@@ -176,7 +233,9 @@ class Map:
         for count in range(len(self.zombie)):
             if self.zombie[count].status == 1:
                 self.zombie[count].draw()
-#                time.sleep(1)
+#                if(self.set_up == 0):
+#                    time.sleep(0.1)
+
 # Check all black hole for Zombie
     def check_only_black_hole(self):
         for count in range(len(self.zombie)):

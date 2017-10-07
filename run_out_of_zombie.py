@@ -11,15 +11,15 @@ HIGHT = 51
 SCREEN_WIDTH = NUM_COLUMN * WIDTH +1
 SCREEN_HIGHT = NUM_ROW * HIGHT +1
 
-if SCREEN_WIDTH*SCREEN_HIGHT >=50:
-    NUM_TRAP = NUM_ROW*NUM_COLUMN*80//100
+if NUM_COLUMN*NUM_ROW >=50:
+    NUM_TRAP = NUM_ROW*NUM_COLUMN*25//100
     NUM_TRAP += NUM_TRAP%6
 else:
-    NUM_TRAP = SCREEN_WIDTH*SCREEN_HIGHT - 5
+    NUM_TRAP = NUM_ROW*NUM_COLUMN*10//100
 
-NUM_WALL = NUM_ROW*NUM_COLUMN*80//100
+NUM_WALL = NUM_ROW*NUM_COLUMN*20//100
 
-NUM_ZOMBIE = NUM_ROW*NUM_COLUMN*20//100
+NUM_ZOMBIE = NUM_ROW*NUM_COLUMN*15//100
 #NUM_ZOMBIE = 2
 class Game_Character(arcade.Sprite):
     def __init__(self, *location_of_picture, **character):
@@ -92,6 +92,7 @@ class Game_Window(arcade.Window):
             self.map.draw_zombie()
 #            for count in range(NUM_ZOMBIE):
 #                self.zombie_sprite[count].draw()
+            self.map.set_up = 0
         elif self.current_state == "you_win":
             self.draw_win_game()
         elif self.current_state == "you_lose":

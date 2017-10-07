@@ -18,7 +18,7 @@ class Main_Character:
         self.check_zombie_on_map()
         self.check_black_hole() 
         print("move is %i and %i"%(movement_x,movement_y))
-        if self.pos_x + movement_x > -1 and self.pos_x + movement_x < self.limit_x and movement_x != 0:
+        if self.pos_x + movement_x > -1 and self.pos_x + movement_x < self.limit_x and movement_x != 0 and self.check_wall(movement_x, movement_y):
             self.pos_x += movement_x
             self.check_map()
             self.check_zombie_on_map()
@@ -26,7 +26,7 @@ class Main_Character:
             self.check_zombie_on_map() 
             self.round += 1
             print("----------finish round {:>3.0f}----------".format(self.round))
-        elif self.pos_y + movement_y > -1 and self.pos_y + movement_y < self.limit_y and movement_y != 0:
+        elif self.pos_y + movement_y > -1 and self.pos_y + movement_y < self.limit_y and movement_y != 0 and self.check_wall(movement_x, movement_y):
             self.pos_y += movement_y
             self.check_map() 
             self.check_zombie_on_map() 
@@ -36,6 +36,17 @@ class Main_Character:
             print("----------finish round {:>3.0f}----------".format(self.round))
         self.real_x = 1 + self.pos_x*self.world.width + self.world.width/2
         self.real_y = 1 + self.pos_y*self.world.hight + self.world.hight/2
+
+    def check_wall(self, movement_x, movement_y):
+        if movement_x == -1 and self.world.wall_map[self.pos_y][self.pos_x][0] == 1:
+            return False
+        elif movement_x == 1 and self.world.wall_map[self.pos_y][self.pos_x][3] == 1:
+            return False
+        if movement_y == -1 and self.world.wall_map[self.pos_y][self.pos_x][2] == 1:
+            return False
+        if movement_y == 1 and self.world.wall_map[self.pos_y][self.pos_x][1] == 1:
+            return False
+        return True            
 
     def check_map(self):
         print("Welcome to check_map in Main_Character")
@@ -81,6 +92,8 @@ class Zombie_Character:
         self.picture.set_position(self.real_x,self.real_y)
         print("limit is %i and %i"%(self.limit_x,self.limit_y))
         self.status = 1
+        self.target_x = self.world.knight.pos_x
+        self.target_y = self.world.knight.pos_y
 
     def draw(self):
         self.picture.draw()
@@ -88,6 +101,9 @@ class Zombie_Character:
 
     def update(self):
         self.world.check_only_black_hole()
+        if self.find_main_character():
+            print("Zombie see you")
+            self.seeing = 1
         if self.status == 0:
             None
         elif self.seeing == 0:
@@ -107,11 +123,11 @@ class Zombie_Character:
                     movement_y = 1
 #                print("move is %i and %i"%(movement_x,movement_y))
                 if self.looking_black_hole(self.pos_x + movement_x,self.pos_y + movement_y):
-                    if self.pos_x + movement_x > -1 and self.pos_x + movement_x < self.limit_x and movement_x != 0 and not(self.pos_x + movement_x == 0 and self.pos_y == 0) and not(self.pos_x + movement_x == len(self.world.plan_map[0])-1 and self.pos_y == len(self.world.plan_map)-1) :
+                    if self.pos_x + movement_x > -1 and self.pos_x + movement_x < self.limit_x and movement_x != 0 and not(self.pos_x + movement_x == 0 and self.pos_y == 0) and not(self.pos_x + movement_x == len(self.world.plan_map[0])-1 and self.pos_y == len(self.world.plan_map)-1) and self.check_wall(movement_x,movement_y):
                         self.pos_x += movement_x
                         self.check_switch()
                         self.world.check_only_black_hole()
-                    elif self.pos_y + movement_y > -1 and self.pos_y + movement_y < self.limit_y and movement_y != 0 and not(self.pos_y + movement_y == 0 and self.pos_x == 0) and not(self.pos_y + movement_y == len(self.world.plan_map)-1 and self.pos_x == len(self.world.plan_map[0])-1) :
+                    elif self.pos_y + movement_y > -1 and self.pos_y + movement_y < self.limit_y and movement_y != 0 and not(self.pos_y + movement_y == 0 and self.pos_x == 0) and not(self.pos_y + movement_y == len(self.world.plan_map)-1 and self.pos_x == len(self.world.plan_map[0])-1) and self.check_wall(movement_x,movement_y):
                         self.pos_y += movement_y
                         self.check_switch()
                         self.world.check_only_black_hole()
@@ -130,7 +146,56 @@ class Zombie_Character:
         else:
             target_x = self.world.knight.pos_x
             target_y = self.world.knight.pos_y
+        if self.find_main_character():
+            print("Zombie see you")
+            self.seeing = 1
         self.picture.set_position(self.real_x,self.real_y)
+
+    def find_main_character(self):
+        distance_pos_x = self.target_x - self.pos_x
+        distance_pos_y = self.target_y - self.pos_y
+        if distance_pos_x == 1 and distance_pos_y == 1:
+            if (self.world.wall_map[self.pos_y+distance_pos_y][self.pos_x][3]==0 and self.world.wall_map[self.pos_y][self.pos_x][1]==0) or (self.world.wall_map[self.pos_y][self.pos_x+distance_pos_x][1]==0 and self.world.wall_map[self.pos_y][self.pos_x][3]==0): 
+                return True
+        elif distance_pos_x == -1 and distance_pos_y == -1:
+            if (self.world.wall_map[self.pos_y+distance_pos_y][self.pos_x][0]==0 and self.world.wall_map[self.pos_y][self.pos_x][2]==0) or (self.world.wall_map[self.pos_y][self.pos_x+distance_pos_x][2]==0 and self.world.wall_map[self.pos_y][self.pos_x][0]==0): 
+                return True
+        elif distance_pos_x == 1 and distance_pos_y == -1:
+            if (self.world.wall_map[self.pos_y+distance_pos_y][self.pos_x][3]==0 and self.world.wall_map[self.pos_y][self.pos_x][2]==0) or (self.world.wall_map[self.pos_y][self.pos_x+distance_pos_x][2]==0 and self.world.wall_map[self.pos_y][self.pos_x][3]==0): 
+                return True
+        elif distance_pos_x == -1 and distance_pos_y == 1:
+            if (self.world.wall_map[self.pos_y+distance_pos_y][self.pos_x][0]==0 and self.world.wall_map[self.pos_y][self.pos_x][1]==0) or (self.world.wall_map[self.pos_y][self.pos_x+distance_pos_x][2]==0 and self.world.wall_map[self.pos_y][self.pos_x][1]==0): 
+                return True
+        elif distance_pos_x in [-2,-1,1,2] and distance_pos_y == 0:
+            if distance_pos_x == -2 and self.world.wall_map[self.pos_y][self.pos_x-1][0] == 0 and self.world.wall_map[self.pos_y][self.pos_x-1][3] ==0:
+                return True
+            elif distance_pos_x == -1 and self.world.wall_map[self.pos_y][self.pos_x][0] == 0:
+                return True
+            if distance_pos_x == 2 and self.world.wall_map[self.pos_y][self.pos_x+1][0] == 0 and self.world.wall_map[self.pos_y][self.pos_x+1][3] ==0:
+                return True
+            elif distance_pos_x == 1 and self.world.wall_map[self.pos_y][self.pos_x][3] == 0:
+                return True
+        elif distance_pos_y in [-2,-1,1,2] and distance_pos_x == 0:
+            if distance_pos_y == -2 and self.world.wall_map[self.pos_y-1][self.pos_x][2] == 0 and self.world.wall_map[self.pos_y-1][self.pos_x][1] ==0:
+                return True
+            elif distance_pos_y == -1 and self.world.wall_map[self.pos_y][self.pos_x][2] == 0:
+                return True
+            if distance_pos_y == 2 and self.world.wall_map[self.pos_y+1][self.pos_x][2] == 0 and self.world.wall_map[self.pos_y+1][self.pos_x][1] ==0:
+                return True
+            elif distance_pos_y == 1 and self.world.wall_map[self.pos_y][self.pos_x][1] == 0:
+                return True
+        return False
+
+    def check_wall(self, movement_x, movement_y):
+        if movement_x == -1 and self.world.wall_map[self.pos_y][self.pos_x][0] == 1:
+            return False
+        elif movement_x == 1 and self.world.wall_map[self.pos_y][self.pos_x][3] == 1:
+            return False
+        if movement_y == -1 and self.world.wall_map[self.pos_y][self.pos_x][2] == 1:
+            return False
+        if movement_y == 1 and self.world.wall_map[self.pos_y][self.pos_x][1] == 1:
+            return False
+        return True            
  
     def looking_black_hole(self, check_x, check_y):
         for test_key in self.world.trap_keys.keys():
