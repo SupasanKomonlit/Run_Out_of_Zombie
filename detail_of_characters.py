@@ -18,7 +18,7 @@ class Main_Character:
         self.check_zombie_on_map()
         self.check_black_hole() 
         print("move is %i and %i"%(movement_x,movement_y))
-        if self.pos_x + movement_x > -1 and self.pos_x + movement_x < self.limit_x and movement_x != 0 and self.check_wall(movement_x, movement_y):
+        if self.pos_x + movement_x > -1 and self.pos_x + movement_x < self.limit_x and movement_x != 0 and self.check_wall(movement_x, movement_y) and self.status == 1:
             self.pos_x += movement_x
             self.check_map()
             self.check_zombie_on_map()
@@ -26,7 +26,7 @@ class Main_Character:
             self.check_zombie_on_map() 
             self.round += 1
             print("----------finish round {:>3.0f}----------".format(self.round))
-        elif self.pos_y + movement_y > -1 and self.pos_y + movement_y < self.limit_y and movement_y != 0 and self.check_wall(movement_x, movement_y):
+        elif self.pos_y + movement_y > -1 and self.pos_y + movement_y < self.limit_y and movement_y != 0 and self.check_wall(movement_x, movement_y) and self.status == 1:
             self.pos_y += movement_y
             self.check_map() 
             self.check_zombie_on_map() 
