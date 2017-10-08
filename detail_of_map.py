@@ -1,6 +1,7 @@
 import arcade, arcade.key, random , time
 
 from detail_of_characters import Main_Character, Zombie_Character
+from detail_of_board import Board
 
 # random trap and key of trap
 def random_position_trap(array_map):
@@ -112,7 +113,7 @@ def print_key(text,dictionary):
 #value in map have 1:start  2:target 3:zombie 4:black_hole >10:switch
 class Map:
 
-    def __init__(self, SCREEN_WIDTH, SCREEN_HIGHT, WIDTH, HIGHT, array_map , NUM_TRAP, NUM_ZOMBIE, NUM_WALL):
+    def __init__(self, SCREEN_WIDTH, SCREEN_HIGHT, WIDTH, HIGHT, array_map , NUM_TRAP, NUM_ZOMBIE, NUM_WALL,SCREEN_BOARD):
 #preparing variable
         self.plan_map = array_map
         self.width = WIDTH
@@ -125,6 +126,7 @@ class Map:
         self.num_zombie = NUM_ZOMBIE
         self.num_wall = NUM_WALL
         self.set_up = 1
+        self.board = Board(SCREEN_BOARD,SCREEN_HIGHT,self)
         print("len(self.plan_map) is %i"%(len(self.plan_map)))
         print("len(self.plan_map[0]) is %i"%(len(self.plan_map[0])))
 
@@ -207,7 +209,7 @@ class Map:
                         arcade.draw_line(column*self.width+1,row*self.hight+1,(column+1)*self.width+1,row*self.hight+1,arcade.color.BRICK_RED,2)  
         
 # Open or Close Trap
-    def open_or_close(self, import_key):
+    def open_or_close(self, import_key, who,pos_x,pos_y):
         data_of_key = self.trap_keys[import_key]
         same_target = []
         for test_key in self.trap_keys.keys():
@@ -221,6 +223,10 @@ class Map:
             self.trap_keys[collect_key][2] = 0
         sum_score = sum_score % 2
         self.trap_keys[same_target[0]][2] = sum_score
+        if sum_score == 0: 
+            self.board.event_data("Trap at ({},{}) close by ".format(data_of_key[0]+1,data_of_key[1]+1) + who + " at ({},{})".format(pos_x+1,pos_y+1))
+        if sum_score == 1: 
+            self.board.event_data("Trap at ({},{}) open by ".format(data_of_key[0]+1,data_of_key[1]+1) + who + " at ({},{})".format(pos_x+1,pos_y+1))
 
 # Update all zombie
     def update_zombie(self):

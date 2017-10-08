@@ -1,15 +1,17 @@
 import arcade, arcade.key
 
 from detail_of_map import Map
+from detail_of_board import Board
 
 NUM_ROW = 12
 NUM_COLUMN = 16
 
 WIDTH = 51
 HIGHT = 51
-
-SCREEN_WIDTH = NUM_COLUMN * WIDTH +1
+SCREEN_BOARD = 400
+SCREEN_WIDTH = NUM_COLUMN * WIDTH +1 +SCREEN_BOARD 
 SCREEN_HIGHT = NUM_ROW * HIGHT +1
+SCREEN_MAP = NUM_COLUMN * WIDTH + 1
 
 if NUM_COLUMN*NUM_ROW >=50:
     NUM_TRAP = NUM_ROW*NUM_COLUMN*20//100
@@ -20,7 +22,7 @@ else:
 NUM_WALL = NUM_ROW*NUM_COLUMN*25//100
 
 NUM_ZOMBIE = NUM_ROW*NUM_COLUMN*8//100
-#NUM_ZOMBIE = 5 
+#NUM_ZOMBIE = 2 
 class Game_Character(arcade.Sprite):
     def __init__(self, *location_of_picture, **character):
         self.knight = character.pop('knight', None)
@@ -48,7 +50,7 @@ class Game_Window(arcade.Window):
             for column in range(NUM_COLUMN):
                 self.setup_map[row].append(0)
 
-        self.map = Map(SCREEN_WIDTH,SCREEN_HIGHT,WIDTH,HIGHT,self.setup_map,NUM_TRAP,NUM_ZOMBIE,NUM_WALL)
+        self.map = Map(SCREEN_WIDTH,SCREEN_HIGHT,WIDTH,HIGHT,self.setup_map,NUM_TRAP,NUM_ZOMBIE,NUM_WALL,SCREEN_MAP+10)
 #        self.zombie_sprite = []
         self.knight_sprite = Game_Character('images/Knight.png',knight=self.map.knight)
 #        for count in range(NUM_ZOMBIE):
@@ -68,19 +70,30 @@ class Game_Window(arcade.Window):
 
     def draw_win_game(self):
         output = "Congraturation!!!"
-        arcade.draw_text(output, SCREEN_WIDTH/8, SCREEN_HIGHT/2, arcade.color.RED, 60)
+        size = 60
+        delete_length = len(output)//2.5*size
+        arcade.draw_text(output, SCREEN_WIDTH/2 - delete_length, SCREEN_HIGHT/2, arcade.color.RED, size)
         output = "You Win"
-        arcade.draw_text(output, SCREEN_WIDTH/3, SCREEN_HIGHT/2-80, arcade.color.RED, 60)
+        arcade.draw_text(output, SCREEN_WIDTH/3, SCREEN_HIGHT/2- (3*size/2), arcade.color.RED, 60)
 
     def draw_lose_game(self):
         output = "Game Over!!!"
-        arcade.draw_text(output, SCREEN_WIDTH/8+SCREEN_WIDTH/13, SCREEN_HIGHT/2+20, arcade.color.RED, 60)
+        size = 60
+        delete_length = len(output)/2.5*size
+        arcade.draw_text(output, SCREEN_WIDTH/2 - delete_length, SCREEN_HIGHT/2, arcade.color.RED, size)
         output = "You Lose"
-        arcade.draw_text(output, SCREEN_WIDTH/3-SCREEN_WIDTH/20, SCREEN_HIGHT/2-60, arcade.color.RED, 60)
+        delete_length = len(output)/2.5*size
+        arcade.draw_text(output, SCREEN_WIDTH/2- delete_length, SCREEN_HIGHT/2-(1.5*size), arcade.color.RED, 60)
         if self.map.knight.status == 3:
-            arcade.draw_text("Dead by Black Hole", SCREEN_WIDTH/3-SCREEN_WIDTH/9, SCREEN_HIGHT/2-120, arcade.color.RED, 40)
+            output = "Dead by Black Hole "
+            size = 40
+            delete_length = len(output)/2.5*size
+            arcade.draw_text(output, SCREEN_WIDTH/2 - delete_length, SCREEN_HIGHT/2 - (3.5*size), arcade.color.RED, size)
         elif self.map.knight.status == 4:
-            arcade.draw_text("Dead by Zombie", SCREEN_WIDTH/3-SCREEN_WIDTH/15, SCREEN_HIGHT/2-120, arcade.color.RED, 40)
+            output = "Dead by Zombie "
+            size = 40
+            delete_length = len(output)//2.5*size
+            arcade.draw_text(output, SCREEN_WIDTH/2 - delete_length, SCREEN_HIGHT/2 - (3.5*size), arcade.color.RED, size)
 
     def on_draw(self):
         arcade.start_render()
@@ -93,6 +106,8 @@ class Game_Window(arcade.Window):
 #            for count in range(NUM_ZOMBIE):
 #                self.zombie_sprite[count].draw()
             self.map.set_up = 0
+            self.map.board.standard_draw()
+            self.map.board.event_draw()
         elif self.current_state == "you_win":
             self.draw_win_game()
         elif self.current_state == "you_lose":

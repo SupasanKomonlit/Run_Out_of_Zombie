@@ -53,7 +53,7 @@ class Main_Character:
 # Check about switch
         if self.world.plan_map[self.pos_y][self.pos_x] > 10:
             print("That is switch")
-            self.world.open_or_close(self.world.plan_map[self.pos_y][self.pos_x])
+            self.world.open_or_close(self.world.plan_map[self.pos_y][self.pos_x],"hero",self.pos_x,self.pos_y)
 # Check about target
         elif self.world.plan_map[self.pos_y][self.pos_x] == 2:
             print("You win")
@@ -92,7 +92,7 @@ class Zombie_Character:
         self.picture.set_position(self.real_x,self.real_y)
         self.id = code
         self.num_zombie = NUM_ZOMBIE
-        print("limit is %i and %i"%(self.limit_x,self.limit_y))
+#        print("limit is %i and %i"%(self.limit_x,self.limit_y))
         self.status = 1
 
     def draw(self):
@@ -102,9 +102,10 @@ class Zombie_Character:
     def update(self):
         self.world.check_only_black_hole()
         if self.seeing == 1:
-            print("Zombie follow you")
+#            print("Zombie follow you")
+            None
         elif self.find_main_character():
-            print("Zombie see you before move")
+#            print("Zombie see you before move")
             self.seeing = 1
             self.picture = arcade.Sprite("images/Zombie_02.png")
         else:
@@ -150,14 +151,14 @@ class Zombie_Character:
                 break
 #            print("Finish Move")
         else:
-            print("Zombie move mode find you")
+#            print("Zombie move mode find you")
             distance_x = self.world.knight.pos_x - self.pos_x
             distance_y = self.world.knight.pos_y - self.pos_y
-            print("{} {} {}   {} {} {}".format(distance_x , self.world.knight.pos_x , self.pos_x ,distance_y , self.world.knight.pos_y , self.pos_y))
+#            print("{} {} {}   {} {} {}".format(distance_x , self.world.knight.pos_x , self.pos_x ,distance_y , self.world.knight.pos_y , self.pos_y))
             if distance_x != 0 and distance_y != 0:
                 random_way = random.randint(1,100)%2
                 if random_way == 0:
-                    print("random_way is {}".format(random_way))
+#                    print("random_way is {}".format(random_way))
                     if distance_x < 0 and self.check_wall(-1,0) and self.check_zombie_team(-1,0):  
                         self.pos_x -= 1
                     elif distance_x > 0 and self.check_wall(1,0) and self.check_zombie_team(1,0):
@@ -176,25 +177,28 @@ class Zombie_Character:
                     elif distance_x > 0 and self.check_wall(1,0) and self.check_zombie_team(1,0):
                         self.pos_x += 1
                 else:
-                    print("don't move")
+#                    print("don't move")
+                    None
             elif distance_x == 0:
                 if distance_y < 0 and self.check_wall(0,-1) and self.check_zombie_team(0,-1):
                      self.pos_y -= 1
                 elif distance_y > 0 and self.check_wall(0,1) and self.check_zombie_team(0,1):
                     self.pos_y += 1
                 else:
-                    print("don't move")
+#                    print("don't move")
+                    None
             elif distance_y == 0:
                 if distance_x < 0 and self.check_wall(-1,0) and self.check_zombie_team(-1,0):
                      self.pos_x -= 1
                 elif distance_x > 0 and self.check_wall(1,0) and self.check_zombie_team(1,0):
                     self.pos_x += 1
                 else:
-                    print("don't move")
+#                    print("don't move")
+                    None
             self.real_x = 1 + self.pos_x*self.world.width + self.world.width/2
             self.real_y = 1 + self.pos_y*self.world.hight + self.world.hight/2
         if self.find_main_character():
-            print("Zombie see you after move")
+#            print("Zombie see you after move")
             self.seeing = 1
             self.picture = arcade.Sprite("images/Zombie_02.png")
         else:
@@ -203,48 +207,74 @@ class Zombie_Character:
         self.picture.set_position(self.real_x,self.real_y)
 
     def find_main_character(self):
-        print("Zombie will find you!!")
+#        print("Zombie will find you!!")
         distance_pos_x = self.world.knight.pos_x - self.pos_x
         distance_pos_y = self.world.knight.pos_y - self.pos_y
-        print("{} {} {}   {} {} {}".format(distance_pos_x , self.world.knight.pos_x , self.pos_x ,distance_pos_y , self.world.knight.pos_y , self.pos_y))
+#        print("{} {} {}   {} {} {}".format(distance_pos_x , self.world.knight.pos_x , self.pos_x ,distance_pos_y , self.world.knight.pos_y , self.pos_y))
         if distance_pos_x == 1 and distance_pos_y == 1:
             if (self.world.wall_map[self.pos_y+distance_pos_y][self.pos_x][3]==0 and self.world.wall_map[self.pos_y][self.pos_x][1]==0) or (self.world.wall_map[self.pos_y][self.pos_x+distance_pos_x][1]==0 and self.world.wall_map[self.pos_y][self.pos_x][3]==0): 
+                if self.seeing == 0:
+                    self.world.board.event_data("Warning! Zombie see you")
                 return True
         elif distance_pos_x == -1 and distance_pos_y == -1:
             if (self.world.wall_map[self.pos_y+distance_pos_y][self.pos_x][0]==0 and self.world.wall_map[self.pos_y][self.pos_x][2]==0) or (self.world.wall_map[self.pos_y][self.pos_x+distance_pos_x][2]==0 and self.world.wall_map[self.pos_y][self.pos_x][0]==0): 
+                if self.seeing == 0:
+                    self.world.board.event_data("Warning! Zombie see you")
                 return True
         elif distance_pos_x == 1 and distance_pos_y == -1:
             if (self.world.wall_map[self.pos_y+distance_pos_y][self.pos_x][3]==0 and self.world.wall_map[self.pos_y][self.pos_x][2]==0) or (self.world.wall_map[self.pos_y][self.pos_x+distance_pos_x][2]==0 and self.world.wall_map[self.pos_y][self.pos_x][3]==0): 
+                if self.seeing == 0:
+                    self.world.board.event_data("Warning! Zombie see you")
                 return True
         elif distance_pos_x == -1 and distance_pos_y == 1:
             if (self.world.wall_map[self.pos_y+distance_pos_y][self.pos_x][0]==0 and self.world.wall_map[self.pos_y][self.pos_x][1]==0) or (self.world.wall_map[self.pos_y][self.pos_x+distance_pos_x][1]==0 and self.world.wall_map[self.pos_y][self.pos_x][0]==0): 
+                if self.seeing == 0:
+                    self.world.board.event_data("Warning! Zombie see you")
                 return True
         elif distance_pos_x in [-2,-1,1,2] and distance_pos_y == 0:
             if distance_pos_x == -2 and self.world.wall_map[self.pos_y][self.pos_x-1][0] == 0 and self.world.wall_map[self.pos_y][self.pos_x-1][3] ==0:
+                if self.seeing == 0:
+                    self.world.board.event_data("Warning! Zombie see you")
                 return True
             elif distance_pos_x == -1 and self.world.wall_map[self.pos_y][self.pos_x][0] == 0:
+                if self.seeing == 0:
+                    self.world.board.event_data("Warning! Zombie see you")
                 return True
             elif distance_pos_x == 2 and self.world.wall_map[self.pos_y][self.pos_x+1][0] == 0 and self.world.wall_map[self.pos_y][self.pos_x+1][3] ==0:
+                if self.seeing == 0:
+                    self.world.board.event_data("Warning! Zombie see you")
                 return True
             elif distance_pos_x == 1 and self.world.wall_map[self.pos_y][self.pos_x][3] == 0:
+                if self.seeing == 0:
+                    self.world.board.event_data("Warning! Zombie see you")
                 return True
         elif distance_pos_y in [-2,-1,1,2] and distance_pos_x == 0:
             if distance_pos_y == -2 and self.world.wall_map[self.pos_y-1][self.pos_x][2] == 0 and self.world.wall_map[self.pos_y-1][self.pos_x][1] ==0:
+                if self.seeing == 0:
+                    self.world.board.event_data("Warning! Zombie see you")
                 return True
             elif distance_pos_y == -1 and self.world.wall_map[self.pos_y][self.pos_x][2] == 0:
+                if self.seeing == 0:
+                    self.world.board.event_data("Warning! Zombie see you")
                 return True
             elif distance_pos_y == 2 and self.world.wall_map[self.pos_y+1][self.pos_x][2] == 0 and self.world.wall_map[self.pos_y+1][self.pos_x][1] ==0:
+                if self.seeing == 0:
+                    self.world.board.event_data("Warning! Zombie see you")
                 return True
             elif distance_pos_y == 1 and self.world.wall_map[self.pos_y][self.pos_x][1] == 0:
+                if self.seeing == 0:
+                    self.world.board.event_data("Warning! Zombie see you")
                 return True
-        print("Can't find")
+#        print("Can't find")
+        if self.seeing==1:
+            self.world.board.event_data("Success! One Zombie can't find you")
         return False
 
     def check_zombie_team(self, movement_x, movement_y):
-        print("Chech team")
+#        print("Check team")
         for count in range(self.num_zombie):
             if count != self.id and self.world.zombie[count].pos_x == (self.pos_x + movement_x) and self.world.zombie[count].pos_y == (self.pos_y + movement_y):
-                print("I don't move this way because have my team")
+#                print("I don't move this way because have my team")
                 return False
         return True
 
@@ -273,7 +303,8 @@ class Zombie_Character:
             if self.world.trap_keys[test_key][0] == self.pos_y and self.world.trap_keys[test_key][1] == self.pos_x:
 #                print("this position have black hole")
                 if self.world.trap_keys[test_key][2] == 1:
-#                    print("zombie dead")
+                    print("zombie dead")
+                    self.world.board.event_data("One zombie dead :D")
                     self.status = 0
                 else:
                     None
@@ -281,4 +312,4 @@ class Zombie_Character:
 
     def check_switch(self):
         if self.world.plan_map[self.pos_y][self.pos_x] > 10:
-            self.world.open_or_close(self.world.plan_map[self.pos_y][self.pos_x])
+            self.world.open_or_close(self.world.plan_map[self.pos_y][self.pos_x],"zombie",self.pos_x,self.pos_y)
