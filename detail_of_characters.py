@@ -92,8 +92,6 @@ class Zombie_Character:
         self.picture.set_position(self.real_x,self.real_y)
         print("limit is %i and %i"%(self.limit_x,self.limit_y))
         self.status = 1
-        self.target_x = self.world.knight.pos_x
-        self.target_y = self.world.knight.pos_y
 
     def draw(self):
         self.picture.draw()
@@ -102,7 +100,7 @@ class Zombie_Character:
     def update(self):
         self.world.check_only_black_hole()
         if self.find_main_character():
-            print("Zombie see you")
+            print("Zombie see you before move")
             self.seeing = 1
         if self.status == 0:
             None
@@ -136,24 +134,26 @@ class Zombie_Character:
                         continue
                 else:
                     continue
-                print("before move pos_x:{} pos_y:{} movement_x:{} movement_y:{}".format(self.pos_x,self.pos_y,movement_x,movement_y))   
+#                print("before move pos_x:{} pos_y:{} movement_x:{} movement_y:{}".format(self.pos_x,self.pos_y,movement_x,movement_y))   
                 self.real_x = 1 + self.pos_x*self.world.width + self.world.width/2
                 self.real_y = 1 + self.pos_y*self.world.hight + self.world.hight/2
-                print("after move pos_x:{} pos_y:{} real_x:{} real_y:{}".format(self.pos_x,self.pos_y,self.real_x,self.real_y))   
-                print("Zombie Move")
+#                print("after move pos_x:{} pos_y:{} real_x:{} real_y:{}".format(self.pos_x,self.pos_y,self.real_x,self.real_y))   
+#                print("Zombie Move")
                 break
-            print("Finish Move")
+#            print("Finish Move")
         else:
             target_x = self.world.knight.pos_x
             target_y = self.world.knight.pos_y
         if self.find_main_character():
-            print("Zombie see you")
+            print("Zombie see you after there move")
             self.seeing = 1
         self.picture.set_position(self.real_x,self.real_y)
 
     def find_main_character(self):
-        distance_pos_x = self.target_x - self.pos_x
-        distance_pos_y = self.target_y - self.pos_y
+        print("Zombie will find you!!")
+        distance_pos_x = self.world.knight.pos_x - self.pos_x
+        distance_pos_y = self.world.knight.pos_y - self.pos_y
+        print("{} {} {}   {} {} {}".format(distance_pos_x , self.world.knight.pos_x , self.pos_x ,distance_pos_y , self.world.knight.pos_y , self.pos_y))
         if distance_pos_x == 1 and distance_pos_y == 1:
             if (self.world.wall_map[self.pos_y+distance_pos_y][self.pos_x][3]==0 and self.world.wall_map[self.pos_y][self.pos_x][1]==0) or (self.world.wall_map[self.pos_y][self.pos_x+distance_pos_x][1]==0 and self.world.wall_map[self.pos_y][self.pos_x][3]==0): 
                 return True
@@ -171,7 +171,7 @@ class Zombie_Character:
                 return True
             elif distance_pos_x == -1 and self.world.wall_map[self.pos_y][self.pos_x][0] == 0:
                 return True
-            if distance_pos_x == 2 and self.world.wall_map[self.pos_y][self.pos_x+1][0] == 0 and self.world.wall_map[self.pos_y][self.pos_x+1][3] ==0:
+            elif distance_pos_x == 2 and self.world.wall_map[self.pos_y][self.pos_x+1][0] == 0 and self.world.wall_map[self.pos_y][self.pos_x+1][3] ==0:
                 return True
             elif distance_pos_x == 1 and self.world.wall_map[self.pos_y][self.pos_x][3] == 0:
                 return True
@@ -180,10 +180,11 @@ class Zombie_Character:
                 return True
             elif distance_pos_y == -1 and self.world.wall_map[self.pos_y][self.pos_x][2] == 0:
                 return True
-            if distance_pos_y == 2 and self.world.wall_map[self.pos_y+1][self.pos_x][2] == 0 and self.world.wall_map[self.pos_y+1][self.pos_x][1] ==0:
+            elif distance_pos_y == 2 and self.world.wall_map[self.pos_y+1][self.pos_x][2] == 0 and self.world.wall_map[self.pos_y+1][self.pos_x][1] ==0:
                 return True
             elif distance_pos_y == 1 and self.world.wall_map[self.pos_y][self.pos_x][1] == 0:
                 return True
+        print("Can't find")
         return False
 
     def check_wall(self, movement_x, movement_y):
