@@ -19,8 +19,8 @@ else:
 
 NUM_WALL = NUM_ROW*NUM_COLUMN*25//100
 
-#NUM_ZOMBIE = NUM_ROW*NUM_COLUMN*8//100
-NUM_ZOMBIE = 5 
+NUM_ZOMBIE = NUM_ROW*NUM_COLUMN*8//100
+#NUM_ZOMBIE = 5 
 class Game_Character(arcade.Sprite):
     def __init__(self, *location_of_picture, **character):
         self.knight = character.pop('knight', None)
