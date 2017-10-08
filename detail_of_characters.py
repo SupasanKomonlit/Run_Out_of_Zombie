@@ -99,9 +99,15 @@ class Zombie_Character:
 
     def update(self):
         self.world.check_only_black_hole()
-        if self.find_main_character():
+        if self.seeing == 1:
+            print("Zombie follow you")
+        elif self.find_main_character():
             print("Zombie see you before move")
             self.seeing = 1
+            self.picture = arcade.Sprite("images/Zombie_02.png")
+        else:
+            self.seeing = 0
+            self.picture = arcade.Sprite("images/Zombie_01.png")
         if self.status == 0:
             None
         elif self.seeing == 0:
@@ -142,11 +148,56 @@ class Zombie_Character:
                 break
 #            print("Finish Move")
         else:
-            target_x = self.world.knight.pos_x
-            target_y = self.world.knight.pos_y
+            print("Zombie move mode find you")
+            distance_x = self.world.knight.pos_x - self.pos_x
+            distance_y = self.world.knight.pos_y - self.pos_y
+            print("{} {} {}   {} {} {}".format(distance_x , self.world.knight.pos_x , self.pos_x ,distance_y , self.world.knight.pos_y , self.pos_y))
+            if distance_x != 0 and distance_y != 0:
+                random_way = random.randint(1,100)%2
+                if random_way == 0:
+                    print("random_way is {}".format(random_way))
+                    if distance_x < 0 and self.check_wall(-1,0):  
+                        self.pos_x -= 1
+                    elif distance_x > 0 and self.check_wall(1,0):
+                        self.pos_x += 1
+                    elif distance_y < 0 and self.check_wall(0,-1):
+                        self.pos_y -= 1
+                    elif distance_y > 0 and self.check_wall(0,1):
+                        self.pos_y += 1   
+                elif random_way == 1:
+                    if distance_y < 0 and self.check_wall(0,-1):
+                        self.pos_y -= 1
+                    elif distance_y > 0 and self.check_wall(0,1):
+                        self.pos_y += 1   
+                    elif distance_x < 0 and self.check_wall(-1,0):  
+                        self.pos_x -= 1
+                    elif distance_x > 0 and self.check_wall(1,0):
+                        self.pos_x += 1
+                else:
+                    print("don't move")
+            elif distance_x == 0:
+                if distance_y < 0 and self.check_wall(0,-1):
+                     self.pos_y -= 1
+                elif distance_y > 0 and self.check_wall(0,1):
+                    self.pos_y += 1
+                else:
+                    print("don't move")
+            elif distance_y == 0:
+                if distance_x < 0 and self.check_wall(-1,0):
+                     self.pos_x -= 1
+                elif distance_x > 0 and self.check_wall(1,0):
+                    self.pos_x += 1
+                else:
+                    print("don't move")
+            self.real_x = 1 + self.pos_x*self.world.width + self.world.width/2
+            self.real_y = 1 + self.pos_y*self.world.hight + self.world.hight/2
         if self.find_main_character():
-            print("Zombie see you after there move")
+            print("Zombie see you after move")
             self.seeing = 1
+            self.picture = arcade.Sprite("images/Zombie_02.png")
+        else:
+            self.seeing = 0
+            self.picture = arcade.Sprite("images/Zombie_01.png")
         self.picture.set_position(self.real_x,self.real_y)
 
     def find_main_character(self):
@@ -164,7 +215,7 @@ class Zombie_Character:
             if (self.world.wall_map[self.pos_y+distance_pos_y][self.pos_x][3]==0 and self.world.wall_map[self.pos_y][self.pos_x][2]==0) or (self.world.wall_map[self.pos_y][self.pos_x+distance_pos_x][2]==0 and self.world.wall_map[self.pos_y][self.pos_x][3]==0): 
                 return True
         elif distance_pos_x == -1 and distance_pos_y == 1:
-            if (self.world.wall_map[self.pos_y+distance_pos_y][self.pos_x][0]==0 and self.world.wall_map[self.pos_y][self.pos_x][1]==0) or (self.world.wall_map[self.pos_y][self.pos_x+distance_pos_x][2]==0 and self.world.wall_map[self.pos_y][self.pos_x][1]==0): 
+            if (self.world.wall_map[self.pos_y+distance_pos_y][self.pos_x][0]==0 and self.world.wall_map[self.pos_y][self.pos_x][1]==0) or (self.world.wall_map[self.pos_y][self.pos_x+distance_pos_x][1]==0 and self.world.wall_map[self.pos_y][self.pos_x][0]==0): 
                 return True
         elif distance_pos_x in [-2,-1,1,2] and distance_pos_y == 0:
             if distance_pos_x == -2 and self.world.wall_map[self.pos_y][self.pos_x-1][0] == 0 and self.world.wall_map[self.pos_y][self.pos_x-1][3] ==0:

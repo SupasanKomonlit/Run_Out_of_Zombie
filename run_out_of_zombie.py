@@ -12,15 +12,15 @@ SCREEN_WIDTH = NUM_COLUMN * WIDTH +1
 SCREEN_HIGHT = NUM_ROW * HIGHT +1
 
 if NUM_COLUMN*NUM_ROW >=50:
-    NUM_TRAP = NUM_ROW*NUM_COLUMN*25//100
+    NUM_TRAP = NUM_ROW*NUM_COLUMN*20//100
     NUM_TRAP += NUM_TRAP%6
 else:
-    NUM_TRAP = NUM_ROW*NUM_COLUMN*10//100
+    NUM_TRAP = NUM_ROW*NUM_COLUMN*5//100
 
-NUM_WALL = NUM_ROW*NUM_COLUMN*20//100
+NUM_WALL = NUM_ROW*NUM_COLUMN*25//100
 
-#NUM_ZOMBIE = NUM_ROW*NUM_COLUMN*15//100
-NUM_ZOMBIE = 2
+NUM_ZOMBIE = NUM_ROW*NUM_COLUMN*5//100
+#NUM_ZOMBIE = 1 
 class Game_Character(arcade.Sprite):
     def __init__(self, *location_of_picture, **character):
         self.knight = character.pop('knight', None)
