@@ -1,4 +1,4 @@
-import arcade, arcade.key
+import arcade, arcade.key#, time
 
 from detail_of_map import Map
 from detail_of_board import Board
@@ -104,7 +104,7 @@ class Game_Window(arcade.Window):
             self.map.draw_trap()
             self.map.draw_zombie()
 #            for count in range(NUM_ZOMBIE):
-#                self.zombie_sprite[count].draw()
+#                self.map.zombie[count].draw()
             self.map.set_up = 0
             self.map.board.standard_draw()
             self.map.board.event_draw()

@@ -1,4 +1,4 @@
-import arcade, random
+import arcade, random#, time
 
 class Main_Character:
     def __init__(self, world, pos_x, pos_y):
@@ -97,7 +97,6 @@ class Zombie_Character:
 
     def draw(self):
         self.picture.draw()
-
 
     def update(self):
         self.world.check_only_black_hole()

@@ -1,4 +1,4 @@
-import arcade, arcade.key, random , time
+import arcade, arcade.key, random #, time
 
 from detail_of_characters import Main_Character, Zombie_Character
 from detail_of_board import Board
@@ -231,7 +231,10 @@ class Map:
 # Update all zombie
     def update_zombie(self):
         for count in range(len(self.zombie)):
-            self.zombie[count].update()   
+            print("Update Zombie {}".format(count))
+            self.zombie[count].update()
+#            self.zombie[count].draw()
+#            time.sleep(0.01)   
             self.knight.check_black_hole()
 
 # Draw all zombie
@@ -239,8 +242,6 @@ class Map:
         for count in range(len(self.zombie)):
             if self.zombie[count].status == 1:
                 self.zombie[count].draw()
-#                if(self.set_up == 0):
-#                    time.sleep(0.1)
 
 # Check all black hole for Zombie
     def check_only_black_hole(self):

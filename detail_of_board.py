@@ -6,7 +6,7 @@ class Board:
         self.hight = SCREEN_HIGHT
         self.map = Map
         self.data = []
-        self.limit_data = 15
+        self.limit_data = 20
         self.standard_hight = 0
         self.event_hight = 0
 
@@ -23,7 +23,7 @@ class Board:
 
 #input data to event Board
     def event_data(self, event):
-        print("event draw")
+#        print("event draw")
         if event == None:
             None
         elif len(self.data) <= self.limit_data:
