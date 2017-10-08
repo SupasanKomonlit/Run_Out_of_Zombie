@@ -156,7 +156,7 @@ class Map:
             data = random_start_position_of_zombie(self.zombie_map)
             print("Data is ", end = " ")
             print(data)
-            self.zombie.append(Zombie_Character(self, data[0], data[1]))
+            self.zombie.append(Zombie_Character(self, data[0], data[1], count, self.num_zombie))
             self.zombie_map[data[1]][data[0]] = 1
 
 #Set Wall postiton 1 is right position 2 is up position 3 is down position 4 is left
