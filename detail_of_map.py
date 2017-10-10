@@ -70,7 +70,7 @@ def random_position_of_wall(wall_map):
                 continue
         elif random_wall == 2 and random_y != 0:
             count = 0
-            for wall in wall_map[random_y-1][random_x-1]:
+            for wall in wall_map[random_y-1][random_x]:
                 count += wall
             if count > 2:
                 continue
