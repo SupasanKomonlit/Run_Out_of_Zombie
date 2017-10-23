@@ -15,24 +15,24 @@ class Main_Character:
 # assign status 1 is alive 2 is winner 3 is die
 
     def update(self, movement_x , movement_y):
-        self.check_zombie_on_map()
+        self.check_zombie_on_map(2)
         self.check_black_hole() 
         print("move is %i and %i"%(movement_x,movement_y))
         if self.pos_x + movement_x > -1 and self.pos_x + movement_x < self.limit_x and movement_x != 0 and self.check_wall(movement_x, movement_y) and self.status == 1:
             self.pos_x += movement_x
             self.check_map()
-            self.check_zombie_on_map()
+            self.check_zombie_on_map(1)
             self.world.update_zombie() 
-            self.check_zombie_on_map() 
+            self.check_zombie_on_map(2) 
             self.world.check_only_black_hole()
             self.round += 1
             print("----------finish round {:>3.0f}----------".format(self.round))
         elif self.pos_y + movement_y > -1 and self.pos_y + movement_y < self.limit_y and movement_y != 0 and self.check_wall(movement_x, movement_y) and self.status == 1:
             self.pos_y += movement_y
             self.check_map() 
-            self.check_zombie_on_map() 
+            self.check_zombie_on_map(1) 
             self.world.update_zombie() 
-            self.check_zombie_on_map() 
+            self.check_zombie_on_map(2) 
             self.world.check_only_black_hole()
             self.round += 1
             print("----------finish round {:>3.0f}----------".format(self.round))
@@ -72,12 +72,16 @@ class Main_Character:
                     None
                 break
 
-    def check_zombie_on_map(self): 
+    def check_zombie_on_map(self,situation): 
         for count_zombie in range(len(self.world.zombie)):
             if self.world.zombie[count_zombie].status == 1:
                 if self.pos_x == self.world.zombie[count_zombie].pos_x and self.pos_y == self.world.zombie[count_zombie].pos_y:
-                    print("you were biten by zombie")
-                    self.status = 4
+                    if situation == 1:
+                        self.world.zombie[count_zombie].status = 0
+                        self.world.board.event_data("Oh! You kill zombie ")    
+                    elif situation == 2:
+                        print("you were biten by zombie")
+                        self.status = 4
                     
 
 class Zombie_Character:
