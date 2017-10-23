@@ -24,6 +24,7 @@ class Main_Character:
             self.check_zombie_on_map()
             self.world.update_zombie() 
             self.check_zombie_on_map() 
+            self.world.check_only_black_hole()
             self.round += 1
             print("----------finish round {:>3.0f}----------".format(self.round))
         elif self.pos_y + movement_y > -1 and self.pos_y + movement_y < self.limit_y and movement_y != 0 and self.check_wall(movement_x, movement_y) and self.status == 1:
@@ -32,6 +33,7 @@ class Main_Character:
             self.check_zombie_on_map() 
             self.world.update_zombie() 
             self.check_zombie_on_map() 
+            self.world.check_only_black_hole()
             self.round += 1
             print("----------finish round {:>3.0f}----------".format(self.round))
         self.real_x = 1 + self.pos_x*self.world.width + self.world.width/2
@@ -132,11 +134,11 @@ class Zombie_Character:
                     if self.pos_x + movement_x > -1 and self.pos_x + movement_x < self.limit_x and movement_x != 0 and not(self.pos_x + movement_x == 0 and self.pos_y == 0) and not(self.pos_x + movement_x == len(self.world.plan_map[0])-1 and self.pos_y == len(self.world.plan_map)-1) and self.check_wall(movement_x,movement_y) and self.check_zombie_team(movement_x,0):
                         self.pos_x += movement_x
                         self.check_switch()
-                        self.world.check_only_black_hole()
+#                        self.world.check_only_black_hole()
                     elif self.pos_y + movement_y > -1 and self.pos_y + movement_y < self.limit_y and movement_y != 0 and not(self.pos_y + movement_y == 0 and self.pos_x == 0) and not(self.pos_y + movement_y == len(self.world.plan_map)-1 and self.pos_x == len(self.world.plan_map[0])-1) and self.check_wall(movement_x,movement_y) and self.check_zombie_team(0,movement_y):
                         self.pos_y += movement_y
                         self.check_switch()
-                        self.world.check_only_black_hole()
+#                        self.world.check_only_black_hole()
                     else:
 #                        print("Random again in out table")
                         continue

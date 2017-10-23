@@ -40,7 +40,7 @@ def random_position_of_wall(wall_map):
     while True:
         random_x = random.randint(0,len(wall_map[0])-1)
         random_y = random.randint(0,len(wall_map)-1)
-        if (random_x == 0 and random_y == 0) or (random_x == len(wall_map[0])-1 and random_y == len(wall_map)-1):
+        if (random_x == 0 and random_y == 0) or (random_x > len(wall_map[0])-2 and random_y > len(wall_map)-1) or(random_x < 3 and random_y < 3):
             continue
         count = 0
         for wall in wall_map[random_y][random_x]:

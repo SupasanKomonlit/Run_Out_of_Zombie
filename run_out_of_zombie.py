@@ -43,38 +43,52 @@ class Game_Window(arcade.Window):
     def __init__(self, width, height):
         super().__init__(width, height)
         arcade.set_background_color(arcade.color.WHITE)
-        self.current_state = "game_running"
-        self.setup_map= []
-        for row in range(NUM_ROW):
-            self.setup_map.append([])
-            for column in range(NUM_COLUMN):
-                self.setup_map[row].append(0)
+        self.current_state = "setting_game"
+#        self.setup_map= []
+#        for row in range(NUM_ROW):
+#            self.setup_map.append([])
+#            for column in range(NUM_COLUMN):
+#                self.setup_map[row].append(0)
 
-        self.map = Map(SCREEN_WIDTH,SCREEN_HIGHT,WIDTH,HIGHT,self.setup_map,NUM_TRAP,NUM_ZOMBIE,NUM_WALL,SCREEN_MAP+10)
-#        self.zombie_sprite = []
-        self.knight_sprite = Game_Character('images/Knight.png',knight=self.map.knight)
-#        for count in range(NUM_ZOMBIE):
-#            self.zombie_sprite.append(Game_Character('images/Zombie_01.png',zombie=self.map.zombie)) 
+#        self.map = Map(SCREEN_WIDTH,SCREEN_HIGHT,WIDTH,HIGHT,self.setup_map,NUM_TRAP,NUM_ZOMBIE,NUM_WALL,SCREEN_MAP+10)
+#        self.knight_sprite = Game_Character('images/Knight.png',knight=self.map.knight)
                         
             
     def update(self, data):
 #        print("Update_in_Game_Window")
-        if self.map.knight.status == 2:
-            self.current_state = "you_win"
-        elif self.map.knight.status == 3 :
-            print("Dead by Black Hole")
-            self.current_state = "you_lose"
-        elif self.map.knight.status == 4 :
-            print("Dead by Zombie")
-            self.current_state = "you_lose"
+        if self.current_state == "setting_game":
+            print("Seting_Game")
+            self.setup_map= []
+            for row in range(NUM_ROW):
+                self.setup_map.append([])
+                for column in range(NUM_COLUMN):
+                    self.setup_map[row].append(0)
+            self.map = Map(SCREEN_WIDTH,SCREEN_HIGHT,WIDTH,HIGHT,self.setup_map,NUM_TRAP,NUM_ZOMBIE,NUM_WALL,SCREEN_MAP+10)
+            self.knight_sprite = Game_Character('images/Knight.png',knight=self.map.knight)
+            self.current_state = "game_running"
+            
+        elif self.current_state == "game_running":
+            if self.map.knight.status == 2:
+                self.current_state = "you_win"
+            elif self.map.knight.status == 3 :
+                print("Dead by Black Hole")
+                self.current_state = "you_lose"
+            elif self.map.knight.status == 4 :
+                print("Dead by Zombie")
+                self.current_state = "you_lose"
 
     def draw_win_game(self):
         output = "Congraturation!!!"
         size = 60
         delete_length = len(output)//2.5*size
-        arcade.draw_text(output, SCREEN_WIDTH/2 - delete_length, SCREEN_HIGHT/2, arcade.color.RED, size)
+        arcade.draw_text(output, SCREEN_WIDTH - 4*delete_length, SCREEN_HIGHT/2, arcade.color.RED, size)
         output = "You Win"
-        arcade.draw_text(output, SCREEN_WIDTH/3, SCREEN_HIGHT/2- (3*size/2), arcade.color.RED, 60)
+        delete_length = len(output)//2.5*size
+        arcade.draw_text(output, SCREEN_WIDTH - 4*delete_length, SCREEN_HIGHT/2- (3*size/2), arcade.color.RED, 60)
+        output = "Please enter to try again"
+        size = 20
+        delete_length = len(output)/2.5*size
+        arcade.draw_text(output, SCREEN_WIDTH - 4*delete_length, (2*size), arcade.color.RED, 20)
 
     def draw_lose_game(self):
         output = "Game Over!!!"
@@ -83,7 +97,11 @@ class Game_Window(arcade.Window):
         arcade.draw_text(output, SCREEN_WIDTH/2 - delete_length, SCREEN_HIGHT/2, arcade.color.RED, size)
         output = "You Lose"
         delete_length = len(output)/2.5*size
-        arcade.draw_text(output, SCREEN_WIDTH/2- delete_length, SCREEN_HIGHT/2-(1.5*size), arcade.color.RED, 60)
+        arcade.draw_text(output, SCREEN_WIDTH/2 - delete_length, SCREEN_HIGHT/2-(1.5*size), arcade.color.RED, 60)
+        output = "Please enter to try again"
+        size = 20
+        delete_length = len(output)/2.5*size
+        arcade.draw_text(output, SCREEN_WIDTH - 2*delete_length, (2*size), arcade.color.RED, 20)
         if self.map.knight.status == 3:
             output = "Dead by Black Hole "
             size = 40
@@ -115,6 +133,8 @@ class Game_Window(arcade.Window):
 
     def on_key_press(self, key, key_modifiers):
         self.map.on_key_press(key, key_modifiers)
+        if self.current_state in ["you_lose","you_win"] and key == arcade.key.ENTER:
+            self.current_state = "setting_game"
 
 if __name__ == '__main__':
     window = Game_Window(SCREEN_WIDTH, SCREEN_HIGHT)
