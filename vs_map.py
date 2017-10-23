@@ -1,6 +1,6 @@
 import arcade, arcade.key, random #, time
 
-from detail_of_characters import Main_Character, Zombie_Character
+from vs_characters import VS_Main_Character, VS_Zombie_Character
 from detail_of_board import Board
 
 # random trap and key of trap
@@ -111,7 +111,7 @@ def print_key(text,dictionary):
             print("")
 
 #value in map have 1:start  2:target 3:zombie 4:black_hole >10:switch
-class Map:
+class VS_Map:
     def __init__(self, SCREEN_WIDTH, SCREEN_HIGHT, WIDTH, HIGHT, array_map , NUM_TRAP, NUM_ZOMBIE, NUM_WALL,SCREEN_BOARD):
 #preparing variable
         self.plan_map = array_map
@@ -119,7 +119,8 @@ class Map:
         self.hight = HIGHT
         self.widths = SCREEN_WIDTH
         self.hights = SCREEN_HIGHT
-        self.knight = Main_Character(self, 0, 0)
+        self.knight_01 = VS_Main_Character(self, 0, 0,2,1)
+        self.knight_02 = VS_Main_Character(self, len(self.plan_map[0])-1,len(self.plan_map)-1,4,2)
         self.zombie = []
         self.num_trap = NUM_TRAP
         self.num_zombie = NUM_ZOMBIE
@@ -157,7 +158,7 @@ class Map:
             data = random_start_position_of_zombie(self.zombie_map)
             print("Data is ", end = " ")
             print(data)
-            self.zombie.append(Zombie_Character(self, data[0], data[1], count, self.num_zombie))
+            self.zombie.append(VS_Zombie_Character(self, data[0], data[1], count, self.num_zombie))
             self.zombie_map[data[1]][data[0]] = 1
 
 #Set Wall postiton 1 is right position 2 is up position 3 is down position 4 is left
@@ -228,19 +229,19 @@ class Map:
             self.board.event_data("Trap at ({},{}) open by ".format(data_of_key[0]+1,data_of_key[1]+1) + who + " at ({},{})".format(pos_x+1,pos_y+1))
 
 # Update all zombie
-    def update_zombie(self):
-        for count in range(len(self.zombie)):
-            print("Update Zombie {}".format(count))
-            self.zombie[count].update()
+##    def update_zombie(self):
+##        for count in range(len(self.zombie)):
+##            print("Update Zombie {}".format(count))
+##            self.zombie[count].update()
 #            self.zombie[count].draw()
 #            time.sleep(0.01)   
-            self.knight.check_black_hole()
+##            self.knight.check_black_hole()
 
 # Draw all zombie
-    def draw_zombie(self):
-        for count in range(len(self.zombie)):
-            if self.zombie[count].status == 1:
-                self.zombie[count].draw()
+##    def draw_zombie(self):
+##        for count in range(len(self.zombie)):
+##            if self.zombie[count].status == 1:
+##                self.zombie[count].draw()
 
 # Check all black hole for Zombie
     def check_only_black_hole(self):
@@ -267,10 +268,10 @@ class Map:
 
     def on_key_press(self, key, key_modifiers):
         if key == arcade.key.MOTION_DOWN:
-            self.knight.update(0,-1)
+            self.knight_01.update(0,-1)
         elif key == arcade.key.MOTION_UP:
-            self.knight.update(0,1)
+            self.knight_01.update(0,1)
         elif key == arcade.key.MOTION_LEFT:
-            self.knight.update(-1,0)
+            self.knight_01.update(-1,0)
         elif key == arcade.key.MOTION_RIGHT:
-            self.knight.update(1,0)                
+            self.knight_01.update(1,0)                

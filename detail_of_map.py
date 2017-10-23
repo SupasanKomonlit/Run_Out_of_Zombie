@@ -30,7 +30,7 @@ def random_start_position_of_zombie(zombie_map):
     while True:
         random_x = random.randint(0,len(zombie_map[0])-1)
         random_y = random.randint(0,len(zombie_map)-1)
-        if (random_x < 3 and random_y < 3) or (random_x == len(zombie_map[0])-1 and random_y == len(zombie_map)-1):
+        if (random_x < 4 and random_y < 4) or (random_x == len(zombie_map[0])-1 and random_y == len(zombie_map)-1):
             continue
         if zombie_map[random_y][random_x] == 0:
             return random_x, random_y

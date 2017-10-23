@@ -1,7 +1,9 @@
-import arcade, arcade.key#, time
+import arcade, arcade.key, time
 
 from detail_of_map import Map
 from detail_of_board import Board
+
+from vs_map import VS_Map
 
 NUM_ROW = 12
 NUM_COLUMN = 16
@@ -26,14 +28,14 @@ NUM_ZOMBIE = NUM_ROW*NUM_COLUMN*14//100
 class Game_Character(arcade.Sprite):
     def __init__(self, *location_of_picture, **character):
         self.knight = character.pop('knight', None)
-#        self.zombie = character.pop('zombie',None)
+        self.zombie = character.pop('zombie',None)
         super().__init__(*location_of_picture, **character)
 
     def sync_with_model(self):
         if self.knight:
             self.set_position(self.knight.real_x, self.knight.real_y)
-#        elif self.zombie:
-#            self.set_position(self.zombie.real_x, self.zombie.real_y)
+        elif self.zombie:
+            self.set_position(self.zombie.real_x, self.zombie.real_y)
 
     def draw(self):
         self.sync_with_model()
@@ -78,14 +80,59 @@ class Game_Window(arcade.Window):
                 print("Dead by Zombie")
                 self.current_state = "you_lose"
 
+        elif self.current_state == "set_vs_game":
+            print("set_vs_Game")
+            self.setup_map= []
+            for row in range(NUM_ROW):
+                self.setup_map.append([])
+                for column in range(NUM_COLUMN):
+                    self.setup_map[row].append(0)
+            self.map = VS_Map(SCREEN_WIDTH,SCREEN_HIGHT,WIDTH,HIGHT,self.setup_map,NUM_TRAP//2,NUM_ZOMBIE-6,NUM_WALL,SCREEN_MAP+10)
+            print("Set map finish")
+            self.knight_sprite = Game_Character('images/Knight.png',knight=self.map.knight_01)
+            self.zombie_sprite = []
+            for count in range(NUM_ZOMBIE-6):
+                self.zombie_sprite.append(Game_Character('images/Zombie_01.png',zombie=self.map.zombie[count]))
+            print("Have all Zombie")
+            self.current_state = "vs_game"
+            self.set_time = 0
+            self.num_zombie_update = 0
+            print("finish set_vs_game")
+
+        elif self.current_state == "vs_game":
+            self.map.knight_01.check_zombie_on_map(2)
+#            print("first time of in run out of Zombie")
+#            print("vs_game")
+            if self.map.knight_01.status == 2:
+                self.current_state = "you_win"
+            elif self.map.knight_01.status == 3 :
+                print("Dead by Black Hole")
+                self.current_state = "you_lose"
+            elif self.map.knight_01.status == 4 :
+                print("Dead by Zombie")
+                self.current_state = "you_lose"
+            if self.set_time == 0:
+                self.set_time = time.time()
+            self.current_time = time.time()
+            if self.current_time - self.set_time >= 0.01:
+                self.set_time = self.current_time
+                self.map.zombie[self.num_zombie_update].update()
+                if self.map.zombie[self.num_zombie_update].seeing in [1,2]:
+                    self.zombie_sprite[self.num_zombie_update] = Game_Character('images/Zombie_02.png',zombie=self.map.zombie[self.num_zombie_update])
+                else:
+                    self.zombie_sprite[self.num_zombie_update] = Game_Character('images/Zombie_01.png',zombie=self.map.zombie[self.num_zombie_update])
+                self.num_zombie_update += 1
+                if self.num_zombie_update == NUM_ZOMBIE-6:
+                    self.num_zombie_update = 0
+
     def draw_win_game(self):
         output = "Congraturation!!!"
         size = 60
         delete_length = len(output)//2.5*size
-        arcade.draw_text(output, SCREEN_WIDTH - 4*delete_length, SCREEN_HIGHT/2, arcade.color.RED, size)
+        arcade.draw_text(output, SCREEN_WIDTH/2 - 300, SCREEN_HIGHT/2, arcade.color.RED, size)
         output = "You Win"
         delete_length = len(output)//2.5*size
-        arcade.draw_text(output, SCREEN_WIDTH - 4*delete_length, SCREEN_HIGHT/2- (3*size/2), arcade.color.RED, 60)
+        arcade.draw_text(output, SCREEN_WIDTH/2 - 200, SCREEN_HIGHT/2- (3*size/2), arcade.color.RED, 60)
         output = "Please enter to try again"
         size = 20
         delete_length = len(output)/2.5*size
@@ -124,6 +171,7 @@ class Game_Window(arcade.Window):
 
     def on_draw(self):
         arcade.start_render()
+#        print("In on draw is {}".format(self.current_state))
         if self.current_state == "game_running":
             self.map.draw_grid()
             self.map.draw_wall()
@@ -132,8 +180,8 @@ class Game_Window(arcade.Window):
             self.map.draw_zombie()
 #            for count in range(NUM_ZOMBIE):
 #                self.map.zombie[count].draw()
-            self.map.set_up = 0
-            self.map.board.standard_draw()
+#            self.map.set_up = 0
+            self.map.board.standard_draw("classic")
             self.map.board.event_draw()
         elif self.current_state == "you_win":
             self.draw_win_game()
@@ -141,9 +189,25 @@ class Game_Window(arcade.Window):
             self.draw_lose_game()
         elif self.current_state == "interface":
             self.interface()
+        elif self.current_state == "vs_game":
+            self.map.draw_grid()
+            self.map.draw_wall()
+            self.knight_sprite.draw()
+            self.map.draw_trap()
+#            self.map.draw_zombie()
+            count = 0
+            while count < NUM_ZOMBIE - 6:
+                if self.map.zombie[count].status == 1:
+                    self.zombie_sprite[count].draw()
+                count += 1
+            self.map.set_up = 0
+            self.map.board.standard_draw("vs")
+            self.map.board.event_draw()            
 
     def on_key_press(self, key, key_modifiers):
         if self.current_state == "game_running":
+            self.map.on_key_press(key, key_modifiers)
+        elif self.current_state == "vs_game":
             self.map.on_key_press(key, key_modifiers)
         elif self.current_state in ["you_lose","you_win"] and key == arcade.key.ENTER:
             self.current_state = "interface"
@@ -155,7 +219,7 @@ class Game_Window(arcade.Window):
         elif self.current_state == "interface" and key == arcade.key.ENTER and self.point == 1:
             self.current_state = "setting_game"
         elif self.current_state == "interface" and key == arcade.key.ENTER and self.point == 2:
-            self.current_state = "setting_game"
+            self.current_state = "set_vs_game"
 
 if __name__ == '__main__':
     window = Game_Window(SCREEN_WIDTH, SCREEN_HIGHT)

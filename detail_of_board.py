@@ -11,8 +11,11 @@ class Board:
         self.event_hight = 0
 
 #Draw original Datail    
-    def standard_draw(self):
-        output = "Round : {:>3.0f}".format(self.map.knight.round)
+    def standard_draw(self, mode):
+        if mode == "classic":
+            output = "Round : {:>3.0f}".format(self.map.knight.round)
+        else:
+            output = "Time : "
         size = 16
         arcade.draw_text(output,self.width,self.hight - (size*2), arcade.color.BLACK, size)
         self.standard_hight = size*2
