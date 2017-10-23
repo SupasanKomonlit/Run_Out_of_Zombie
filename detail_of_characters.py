@@ -280,7 +280,8 @@ class Zombie_Character:
         for count in range(self.num_zombie):
             if count != self.id and self.world.zombie[count].pos_x == (self.pos_x + movement_x) and self.world.zombie[count].pos_y == (self.pos_y + movement_y):
 #                print("I don't move this way because have my team")
-                return False
+                if self.world.zombie[count].status == 1:
+                    return False
         return True
 
     def check_wall(self, movement_x, movement_y):

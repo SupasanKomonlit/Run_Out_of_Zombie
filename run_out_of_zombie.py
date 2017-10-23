@@ -21,7 +21,7 @@ else:
 
 NUM_WALL = NUM_ROW*NUM_COLUMN*25//100
 
-NUM_ZOMBIE = NUM_ROW*NUM_COLUMN*8//100
+NUM_ZOMBIE = NUM_ROW*NUM_COLUMN*14//100
 #NUM_ZOMBIE = 2 
 class Game_Character(arcade.Sprite):
     def __init__(self, *location_of_picture, **character):
@@ -43,7 +43,8 @@ class Game_Window(arcade.Window):
     def __init__(self, width, height):
         super().__init__(width, height)
         arcade.set_background_color(arcade.color.WHITE)
-        self.current_state = "setting_game"
+        self.current_state = "interface"
+        self.point = 1
 #        self.setup_map= []
 #        for row in range(NUM_ROW):
 #            self.setup_map.append([])
@@ -113,6 +114,14 @@ class Game_Window(arcade.Window):
             delete_length = len(output)//2.5*size
             arcade.draw_text(output, SCREEN_WIDTH/2 - delete_length, SCREEN_HIGHT/2 - (3.5*size), arcade.color.RED, size)
 
+    def interface(self):
+        arcade.draw_text("Classic Mode", SCREEN_WIDTH/2 -175,500,arcade.color.FLAME,30)
+        arcade.draw_text("VS Mode <coming soon>", SCREEN_WIDTH/2 -140,200,arcade.color.ANTIQUE_FUCHSIA,30)
+        if self.point == 1:
+            arcade.draw_line(SCREEN_WIDTH/2 - 180,500,SCREEN_WIDTH/2 + 70,500,arcade.color.CORAL_RED)
+        else:
+            arcade.draw_line(SCREEN_WIDTH/2 - 140,200,SCREEN_WIDTH/2+30,200,arcade.color.CORAL_RED)
+
     def on_draw(self):
         arcade.start_render()
         if self.current_state == "game_running":
@@ -130,10 +139,22 @@ class Game_Window(arcade.Window):
             self.draw_win_game()
         elif self.current_state == "you_lose":
             self.draw_lose_game()
+        elif self.current_state == "interface":
+            self.interface()
 
     def on_key_press(self, key, key_modifiers):
-        self.map.on_key_press(key, key_modifiers)
-        if self.current_state in ["you_lose","you_win"] and key == arcade.key.ENTER:
+        if self.current_state == "game_running":
+            self.map.on_key_press(key, key_modifiers)
+        elif self.current_state in ["you_lose","you_win"] and key == arcade.key.ENTER:
+            self.current_state = "interface"
+            self.point = 1
+        elif self.current_state == "interface" and key == arcade.key.UP:
+            self.point = 1
+        elif self.current_state == "interface" and key == arcade.key.DOWN:
+            self.point = 2
+        elif self.current_state == "interface" and key == arcade.key.ENTER and self.point == 1:
+            self.current_state = "setting_game"
+        elif self.current_state == "interface" and key == arcade.key.ENTER and self.point == 2:
             self.current_state = "setting_game"
 
 if __name__ == '__main__':

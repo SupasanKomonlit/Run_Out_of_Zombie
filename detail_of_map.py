@@ -112,7 +112,6 @@ def print_key(text,dictionary):
 
 #value in map have 1:start  2:target 3:zombie 4:black_hole >10:switch
 class Map:
-
     def __init__(self, SCREEN_WIDTH, SCREEN_HIGHT, WIDTH, HIGHT, array_map , NUM_TRAP, NUM_ZOMBIE, NUM_WALL,SCREEN_BOARD):
 #preparing variable
         self.plan_map = array_map
