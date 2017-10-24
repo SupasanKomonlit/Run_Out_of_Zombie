@@ -19,6 +19,8 @@ def random_position_trap(array_map):
         trap_x = random.randint(0,limit_x)
         trap_y = random.randint(0,limit_y)
 #        print("trap_x : {} trap_y : {}".format(trap_x,trap_y))
+        if (trap_x < 3 and trap_y <3):
+            continue
         if(array_map[trap_y][trap_x] != 1 and array_map[trap_y][trap_x] != 2):
             None
         else:

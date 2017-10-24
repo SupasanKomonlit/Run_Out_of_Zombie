@@ -23,8 +23,8 @@ else:
 
 NUM_WALL = NUM_ROW*NUM_COLUMN*25//100
 
-NUM_ZOMBIE = NUM_ROW*NUM_COLUMN*14//100
-#NUM_ZOMBIE = 2 
+NUM_ZOMBIE = NUM_ROW*NUM_COLUMN*17//100
+#NUM_ZOMBIE = 2
 class Game_Character(arcade.Sprite):
     def __init__(self, *location_of_picture, **character):
         self.knight = character.pop('knight', None)
@@ -87,43 +87,111 @@ class Game_Window(arcade.Window):
                 self.setup_map.append([])
                 for column in range(NUM_COLUMN):
                     self.setup_map[row].append(0)
-            self.map = VS_Map(SCREEN_WIDTH,SCREEN_HIGHT,WIDTH,HIGHT,self.setup_map,NUM_TRAP//2,NUM_ZOMBIE-6,NUM_WALL,SCREEN_MAP+10)
+            self.map = VS_Map(SCREEN_WIDTH,SCREEN_HIGHT,WIDTH,HIGHT,self.setup_map,(NUM_TRAP*2)//3,NUM_ZOMBIE,NUM_WALL,SCREEN_MAP+10)
             print("Set map finish")
-            self.knight_sprite = Game_Character('images/Knight.png',knight=self.map.knight_01)
+            self.knight_01_sprite = Game_Character('images/Knight_02.png',knight=self.map.knight_01)
+            self.knight_02_sprite = Game_Character('images/Knight.png',knight=self.map.knight_02)
             self.zombie_sprite = []
-            for count in range(NUM_ZOMBIE-6):
+            for count in range(NUM_ZOMBIE):
                 self.zombie_sprite.append(Game_Character('images/Zombie_01.png',zombie=self.map.zombie[count]))
             print("Have all Zombie")
             self.current_state = "vs_game"
-            self.set_time = 0
+            self.start_time = time.time()
+            self.set_time = self.start_time
             self.num_zombie_update = 0
             print("finish set_vs_game")
 
         elif self.current_state == "vs_game":
+            self.current_time = time.time() 
+            if self.current_time - self.start_time > 31:
+                self.current_state = "time_out"
             self.map.knight_01.check_zombie_on_map(2)
+            self.map.knight_01.check_black_hole()
+            self.map.knight_02.check_zombie_on_map(2)
+            self.map.knight_02.check_black_hole()
 #            print("first time of in run out of Zombie")
 #            print("vs_game")
-            if self.map.knight_01.status == 2:
-                self.current_state = "you_win"
-            elif self.map.knight_01.status == 3 :
-                print("Dead by Black Hole")
-                self.current_state = "you_lose"
-            elif self.map.knight_01.status == 4 :
-                print("Dead by Zombie")
-                self.current_state = "you_lose"
-            if self.set_time == 0:
-                self.set_time = time.time()
-            self.current_time = time.time()
-            if self.current_time - self.set_time >= 0.01:
-                self.set_time = self.current_time
-                self.map.zombie[self.num_zombie_update].update()
-                if self.map.zombie[self.num_zombie_update].seeing in [1,2]:
-                    self.zombie_sprite[self.num_zombie_update] = Game_Character('images/Zombie_02.png',zombie=self.map.zombie[self.num_zombie_update])
-                else:
-                    self.zombie_sprite[self.num_zombie_update] = Game_Character('images/Zombie_01.png',zombie=self.map.zombie[self.num_zombie_update])
-                self.num_zombie_update += 1
-                if self.num_zombie_update == NUM_ZOMBIE-6:
-                    self.num_zombie_update = 0
+            if self.map.knight_01.status == 2 or self.map.knight_02.status == 2:
+                self.current_state = "vs_win"
+            elif self.map.knight_01.status in [3,4,5] and self.map.knight_02.status in [3,4,5] :
+                self.current_state = "vs_lose"
+#            if self.current_time - self.set_time >= 0.0001:
+            self.set_time = self.current_time
+            self.map.zombie[self.num_zombie_update].update()
+            if self.map.zombie[self.num_zombie_update].seeing in [1,2]:
+                self.zombie_sprite[self.num_zombie_update] = Game_Character('images/Zombie_02.png',zombie=self.map.zombie[self.num_zombie_update])
+            else:
+                self.zombie_sprite[self.num_zombie_update] = Game_Character('images/Zombie_01.png',zombie=self.map.zombie[self.num_zombie_update])
+            self.num_zombie_update += 1
+            if self.num_zombie_update == NUM_ZOMBIE-6:
+                self.num_zombie_update = 0
+
+    def time_out(self):
+        output = "Do you have brain?"
+        size = 40
+        delete_length = len(output)/2.5*size
+        arcade.draw_text(output, SCREEN_WIDTH/2 - delete_length +20, SCREEN_HIGHT/2+60, arcade.color.RED, size)
+
+        size = 25
+        output = "{:0>2.0f}:{:0>2.0f}".format(self.map.knight_01.kill,self.map.knight_02.kill)
+        delete_length = len(output)/2.5*size
+        arcade.draw_text(output, SCREEN_WIDTH/2 - delete_length - 33, SCREEN_HIGHT/2 -50, arcade.color.RED, size)
+        size = 20 
+        output = "Player01:Player02"
+        delete_length = len(output)/2.5*size
+        arcade.draw_text(output, SCREEN_WIDTH/2 - delete_length - 20, SCREEN_HIGHT/2, arcade.color.RED, size)
+        output = "Please enter to try again"
+        delete_length = len(output)/2.5*size
+        arcade.draw_text(output, SCREEN_WIDTH - 4*delete_length, (2*size), arcade.color.RED, size)
+
+    def vs_lose(self):
+        output = "You all Lose"
+        size = 50
+        delete_length = len(output)/2.5*size
+        arcade.draw_text(output, SCREEN_WIDTH/2 - delete_length  , SCREEN_HIGHT/2+60, arcade.color.RED, size)
+
+        size = 25
+        output = "{:0>2.0f}:{:0>2.0f}".format(self.map.knight_01.kill,self.map.knight_02.kill)
+        delete_length = len(output)/2.5*size
+        arcade.draw_text(output, SCREEN_WIDTH/2 - delete_length - 33, SCREEN_HIGHT/2 -50, arcade.color.RED, size)
+        size = 20 
+        output = "Player01:Player02"
+        delete_length = len(output)/2.5*size
+        arcade.draw_text(output, SCREEN_WIDTH/2 - delete_length - 20, SCREEN_HIGHT/2, arcade.color.RED, size)
+        output = "Please enter to try again"
+        delete_length = len(output)/2.5*size
+        arcade.draw_text(output, SCREEN_WIDTH - 4*delete_length, (2*size), arcade.color.RED, size)
+
+    def vs_win(self): 
+        if self.map.knight_01.status == 2 and self.map.knight_02.status == 2:
+            if self.map.knight_01.kill > self.map.knight_02.kill:
+                output = "Player 1 is winner"
+            elif self.map.knight_02.kill > self.map.knight_01.kill:
+                output = "Player 2 is winner"
+            else:
+                output = "Draw"
+        elif self.map.knight_01.status == 2:
+            output = "Player 1 is winner"
+        else:
+            output = "Player 2 is winner"
+        if output == "Draw":
+            size = 60
+        else:
+            size = 40
+        delete_length = len(output)/2.5*size
+        arcade.draw_text(output, SCREEN_WIDTH/2 - delete_length + 30 , SCREEN_HIGHT/2+60, arcade.color.RED, size)
+
+        size = 25
+        output = "{:0>2.0f}:{:0>2.0f}".format(self.map.knight_01.kill,self.map.knight_02.kill)
+        delete_length = len(output)/2.5*size
+        arcade.draw_text(output, SCREEN_WIDTH/2 - delete_length - 33, SCREEN_HIGHT/2 -50, arcade.color.RED, size)
+        size = 20 
+        output = "Player01:Player02"
+        delete_length = len(output)/2.5*size
+        arcade.draw_text(output, SCREEN_WIDTH/2 - delete_length - 20, SCREEN_HIGHT/2, arcade.color.RED, size)
+        output = "Please enter to try again"
+        delete_length = len(output)/2.5*size
+        arcade.draw_text(output, SCREEN_WIDTH - 4*delete_length, (2*size), arcade.color.RED, size)
 
     def draw_win_game(self):
         output = "Congraturation!!!"
@@ -142,10 +210,10 @@ class Game_Window(arcade.Window):
         output = "Game Over!!!"
         size = 60
         delete_length = len(output)/2.5*size
-        arcade.draw_text(output, SCREEN_WIDTH/2 - delete_length, SCREEN_HIGHT/2, arcade.color.RED, size)
+        arcade.draw_text(output, SCREEN_WIDTH/2 - delete_length, SCREEN_HIGHT/2 + 40, arcade.color.RED, size)
         output = "You Lose"
         delete_length = len(output)/2.5*size
-        arcade.draw_text(output, SCREEN_WIDTH/2 - delete_length, SCREEN_HIGHT/2-(1.5*size), arcade.color.RED, 60)
+        arcade.draw_text(output, SCREEN_WIDTH/2 - delete_length, SCREEN_HIGHT/2-(1.5*size) + 30, arcade.color.RED, 60)
         output = "Please enter to try again"
         size = 20
         delete_length = len(output)/2.5*size
@@ -154,16 +222,16 @@ class Game_Window(arcade.Window):
             output = "Dead by Black Hole "
             size = 40
             delete_length = len(output)/2.5*size
-            arcade.draw_text(output, SCREEN_WIDTH/2 - delete_length, SCREEN_HIGHT/2 - (3.5*size), arcade.color.RED, size)
+            arcade.draw_text(output, SCREEN_WIDTH/2 - delete_length + 55, SCREEN_HIGHT/2 - (3.5*size) + 10, arcade.color.RED, size)
         elif self.map.knight.status == 4:
             output = "Dead by Zombie "
             size = 40
             delete_length = len(output)//2.5*size
-            arcade.draw_text(output, SCREEN_WIDTH/2 - delete_length, SCREEN_HIGHT/2 - (3.5*size), arcade.color.RED, size)
+            arcade.draw_text(output, SCREEN_WIDTH/2 - delete_length + 10 , SCREEN_HIGHT/2 - (3.5*size), arcade.color.RED, size)
 
     def interface(self):
         arcade.draw_text("Classic Mode", SCREEN_WIDTH/2 -175,500,arcade.color.FLAME,30)
-        arcade.draw_text("VS Mode <coming soon>", SCREEN_WIDTH/2 -140,200,arcade.color.ANTIQUE_FUCHSIA,30)
+        arcade.draw_text("VS Mode", SCREEN_WIDTH/2 -140,200,arcade.color.ANTIQUE_FUCHSIA,30)
         if self.point == 1:
             arcade.draw_line(SCREEN_WIDTH/2 - 180,500,SCREEN_WIDTH/2 + 70,500,arcade.color.CORAL_RED)
         else:
@@ -181,7 +249,7 @@ class Game_Window(arcade.Window):
 #            for count in range(NUM_ZOMBIE):
 #                self.map.zombie[count].draw()
 #            self.map.set_up = 0
-            self.map.board.standard_draw("classic")
+            self.map.board.standard_draw()
             self.map.board.event_draw()
         elif self.current_state == "you_win":
             self.draw_win_game()
@@ -189,19 +257,28 @@ class Game_Window(arcade.Window):
             self.draw_lose_game()
         elif self.current_state == "interface":
             self.interface()
+        elif self.current_state == "time_out":
+            self.time_out()
+        elif self.current_state == "vs_lose":
+            self.vs_lose()
+        elif self.current_state == "vs_win":
+            self.vs_win()
         elif self.current_state == "vs_game":
             self.map.draw_grid()
             self.map.draw_wall()
-            self.knight_sprite.draw()
+            if self.map.knight_01.status == 1:
+                self.knight_01_sprite.draw()
+            if self.map.knight_02.status == 1:
+                self.knight_02_sprite.draw()
             self.map.draw_trap()
 #            self.map.draw_zombie()
             count = 0
-            while count < NUM_ZOMBIE - 6:
+            while count < NUM_ZOMBIE:
                 if self.map.zombie[count].status == 1:
                     self.zombie_sprite[count].draw()
                 count += 1
             self.map.set_up = 0
-            self.map.board.standard_draw("vs")
+            self.map.board.vs_standard_draw()
             self.map.board.event_draw()            
 
     def on_key_press(self, key, key_modifiers):
@@ -209,7 +286,7 @@ class Game_Window(arcade.Window):
             self.map.on_key_press(key, key_modifiers)
         elif self.current_state == "vs_game":
             self.map.on_key_press(key, key_modifiers)
-        elif self.current_state in ["you_lose","you_win"] and key == arcade.key.ENTER:
+        elif self.current_state in ["you_lose","you_win","time_out","vs_lose","vs_win"] and key == arcade.key.ENTER:
             self.current_state = "interface"
             self.point = 1
         elif self.current_state == "interface" and key == arcade.key.UP:

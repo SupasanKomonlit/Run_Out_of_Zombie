@@ -1,4 +1,17 @@
-import arcade
+import arcade, time
+
+def find_time(time_01,time_02):
+#    print("time_01: {} \t time_02: {}".format(time_01,time_02))
+    diff = time_02 - time_01
+#    print("diff: {}".format(diff))
+    diff -= diff%1
+    diff = int(diff)
+#    print("diff: {}".format(diff))
+    minute = diff//60
+#    print("minute: {}".format(minute))
+    second = diff%60
+#    print("second: {}".format(second))
+    return "{:0>2.0f}:{:0>2.0f}".format(minute,second)
 
 class Board:
     def __init__(self, SCREEN_BOARD,SCREEN_HIGHT, Map):
@@ -9,13 +22,22 @@ class Board:
         self.limit_data = 20
         self.standard_hight = 0
         self.event_hight = 0
+        self.start_time = time.time()
 
-#Draw original Datail    
-    def standard_draw(self, mode):
-        if mode == "classic":
-            output = "Round : {:>3.0f}".format(self.map.knight.round)
-        else:
-            output = "Time : "
+#Draw original detail    
+    def standard_draw(self):
+        output = "Round : {:>3.0f}".format(self.map.knight.round)
+        size = 16
+        arcade.draw_text(output,self.width,self.hight - (size*2), arcade.color.BLACK, size)
+        self.standard_hight = size*2
+        output = "Zombie remaining : "+str(self.zombie_alive())
+        size = 14
+        arcade.draw_text(output,self.width,self.hight - (size*2) - self.standard_hight, arcade.color.BLACK, size)
+        self.standard_hight += size*2
+
+#Draw vs mode detail
+    def vs_standard_draw(self):
+        output = "Time : "+find_time(self.start_time,time.time())
         size = 16
         arcade.draw_text(output,self.width,self.hight - (size*2), arcade.color.BLACK, size)
         self.standard_hight = size*2

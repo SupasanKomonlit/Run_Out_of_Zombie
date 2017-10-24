@@ -13,7 +13,8 @@ class VS_Main_Character:
         self.target = target
         print("limit is %i and %i"%(self.limit_x,self.limit_y))
         self.status = 1
-# assign status 1 is alive 2 is winner 3 is die
+        self.kill = 0
+# assign status 1 is alive 2 is winner 3 and 4 is die last is five die from hero
 
     def update(self, movement_x , movement_y):
         self.check_zombie_on_map(2)
@@ -24,6 +25,7 @@ class VS_Main_Character:
             self.check_map()
             self.check_zombie_on_map(1)
             self.world.check_only_black_hole()
+            self.check_hero()
 #            self.round += 1
 #            print("----------finish round {:>3.0f}----------".format(self.round))
         elif self.pos_y + movement_y > -1 and self.pos_y + movement_y < self.limit_y and movement_y != 0 and self.check_wall(movement_x, movement_y) and self.status == 1:
@@ -31,10 +33,23 @@ class VS_Main_Character:
             self.check_map() 
             self.check_zombie_on_map(1) 
             self.world.check_only_black_hole()
+            self.check_hero()
 #            self.round += 1
 #            print("----------finish round {:>3.0f}----------".format(self.round))
         self.real_x = 1 + self.pos_x*self.world.width + self.world.width/2
         self.real_y = 1 + self.pos_y*self.world.hight + self.world.hight/2
+
+    def check_hero(self):
+        if self.id == 1 and self.pos_x == self.world.knight_02.pos_x and self.pos_y == self.world.knight_02.pos_y:
+            self.world.knight_02.status = 5
+            self.world.board.event_data("-----------------------------------------")    
+            self.world.board.event_data("     Player 01 Kill Player 02     ")    
+            self.world.board.event_data("-----------------------------------------")    
+        elif self.id == 2 and self.pos_x == self.world.knight_01.pos_x and self.pos_y == self.world.knight_01.pos_y:
+            self.world.knight_01.status = 5
+            self.world.board.event_data("-----------------------------------------")    
+            self.world.board.event_data("     Player 02 Kill Player 01     ")    
+            self.world.board.event_data("-----------------------------------------")    
 
     def check_wall(self, movement_x, movement_y):
         if movement_x == -1 and self.world.wall_map[self.pos_y][self.pos_x][0] == 1:
@@ -75,6 +90,7 @@ class VS_Main_Character:
                 if self.pos_x == self.world.zombie[count_zombie].pos_x and self.pos_y == self.world.zombie[count_zombie].pos_y:
                     if situation == 1:
                         self.world.zombie[count_zombie].status = 0
+                        self.kill += 1
                         self.world.board.event_data("Player "+str(self.id)+" kill zombie ")    
                     elif situation == 2:
                         print("you were biten by zombie")
@@ -103,7 +119,10 @@ class VS_Zombie_Character:
 
     def update(self):
         self.world.check_only_black_hole()
-        if self.find_main_character(1):
+        if self.find_main_character(1) and self.find_main_character(2):
+            self.seeing = (random.randint(1,100)%2)+1
+            self.picture = arcade.Sprite("images/Zombie_02.png")
+        elif self.find_main_character(1):
 #            print("Zombie see you before move")
             self.seeing = 1
             self.picture = arcade.Sprite("images/Zombie_02.png")
@@ -264,9 +283,13 @@ class VS_Zombie_Character:
     def find_main_character(self,id_knight):
 #        print("Zombie will find you!!")
         if id_knight == 1:
+            if self.world.knight_01.status != 1:
+                return False
             distance_pos_x = self.world.knight_01.pos_x - self.pos_x
             distance_pos_y = self.world.knight_01.pos_y - self.pos_y
         elif id_knight == 2:
+            if self.world.knight_02.status != 1:
+                return False
             distance_pos_x = self.world.knight_02.pos_x - self.pos_x
             distance_pos_y = self.world.knight_02.pos_y - self.pos_y
 #        print("{} {} {}   {} {} {}".format(distance_pos_x , self.world.knight.pos_x , self.pos_x ,distance_pos_y , self.world.knight.pos_y , self.pos_y))
