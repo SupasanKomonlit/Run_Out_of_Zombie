@@ -88,18 +88,18 @@ class Game_Window(arcade.Window):
                 for column in range(NUM_COLUMN):
                     self.setup_map[row].append(0)
             self.map = VS_Map(SCREEN_WIDTH,SCREEN_HIGHT,WIDTH,HIGHT,self.setup_map,(NUM_TRAP*2)//3,NUM_ZOMBIE,NUM_WALL,SCREEN_MAP+10)
-            print("Set map finish")
+#            print("Set map finish")
             self.knight_01_sprite = Game_Character('images/Knight_02.png',knight=self.map.knight_01)
             self.knight_02_sprite = Game_Character('images/Knight.png',knight=self.map.knight_02)
             self.zombie_sprite = []
             for count in range(NUM_ZOMBIE):
                 self.zombie_sprite.append(Game_Character('images/Zombie_01.png',zombie=self.map.zombie[count]))
-            print("Have all Zombie")
+#            print("Have all Zombie")
             self.current_state = "vs_game"
             self.start_time = time.time()
             self.set_time = self.start_time
             self.num_zombie_update = 0
-            print("finish set_vs_game")
+#            print("finish set_vs_game")
 
         elif self.current_state == "vs_game":
             self.current_time = time.time() 
