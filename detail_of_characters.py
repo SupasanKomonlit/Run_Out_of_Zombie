@@ -36,6 +36,12 @@ class Main_Character:
             self.world.check_only_black_hole()
             self.round += 1
             print("----------finish round {:>3.0f}----------".format(self.round))
+#        if self.round == 30:
+#            self.world.board.event_data("***************************************")
+#            self.world.board.event_data("***************************************")
+#            self.world.board.event_data("***Next turn Zombie will see you***")
+#            self.world.board.event_data("***************************************")
+#            self.world.board.event_data("***************************************")
         self.real_x = 1 + self.pos_x*self.world.width + self.world.width/2
         self.real_y = 1 + self.pos_y*self.world.hight + self.world.hight/2
 
@@ -110,6 +116,7 @@ class Zombie_Character:
 #            print("Zombie follow you")
             None
         elif self.find_main_character():
+            print("line 119")
 #            print("Zombie see you before move")
             self.seeing = 1
             self.picture = arcade.Sprite("images/Zombie_02.png")
@@ -216,6 +223,8 @@ class Zombie_Character:
         distance_pos_x = self.world.knight.pos_x - self.pos_x
         distance_pos_y = self.world.knight.pos_y - self.pos_y
 #        print("{} {} {}   {} {} {}".format(distance_pos_x , self.world.knight.pos_x , self.pos_x ,distance_pos_y , self.world.knight.pos_y , self.pos_y))
+#        if self.world.knight.round >= 30:
+#            return True
         if distance_pos_x == 1 and distance_pos_y == 1:
             if (self.world.wall_map[self.pos_y+distance_pos_y][self.pos_x][3]==0 and self.world.wall_map[self.pos_y][self.pos_x][1]==0) or (self.world.wall_map[self.pos_y][self.pos_x+distance_pos_x][1]==0 and self.world.wall_map[self.pos_y][self.pos_x][3]==0): 
                 if self.seeing == 0:

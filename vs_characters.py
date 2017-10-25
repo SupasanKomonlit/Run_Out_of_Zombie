@@ -1,4 +1,4 @@
-import arcade, random#, time
+import arcade, random, time
 
 class VS_Main_Character:
     def __init__(self, world, pos_x, pos_y, target, id_code):
@@ -14,6 +14,7 @@ class VS_Main_Character:
         print("limit is %i and %i"%(self.limit_x,self.limit_y))
         self.status = 1
         self.kill = 0
+        self.time = 0
 # assign status 1 is alive 2 is winner 3 and 4 is die last is five die from hero
 
     def update(self, movement_x , movement_y):
@@ -72,6 +73,8 @@ class VS_Main_Character:
         elif self.world.plan_map[self.pos_y][self.pos_x] == self.target:
             print("You win")
             self.status = 2
+            self.time = time.time()
+            print("time = {} of {}".format(self.time,self.id))
 
     def check_black_hole(self):
         for test_key in self.world.trap_keys.keys():

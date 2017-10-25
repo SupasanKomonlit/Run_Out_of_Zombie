@@ -24,7 +24,7 @@ else:
 NUM_WALL = NUM_ROW*NUM_COLUMN*25//100
 
 NUM_ZOMBIE = NUM_ROW*NUM_COLUMN*17//100
-#NUM_ZOMBIE = 2
+#NUM_ZOMBIE = 6
 class Game_Character(arcade.Sprite):
     def __init__(self, *location_of_picture, **character):
         self.knight = character.pop('knight', None)
@@ -99,6 +99,8 @@ class Game_Window(arcade.Window):
             self.start_time = time.time()
             self.set_time = self.start_time
             self.num_zombie_update = 0
+            self.num_zombie_update_02 = (NUM_ZOMBIE)//2
+            self.num_zombie_update_03 = (NUM_ZOMBIE)//3
 #            print("finish set_vs_game")
 
         elif self.current_state == "vs_game":
@@ -116,15 +118,33 @@ class Game_Window(arcade.Window):
             elif self.map.knight_01.status in [3,4,5] and self.map.knight_02.status in [3,4,5] :
                 self.current_state = "vs_lose"
 #            if self.current_time - self.set_time >= 0.0001:
-            self.set_time = self.current_time
+# detail about update zombie 1 zombie per time
             self.map.zombie[self.num_zombie_update].update()
             if self.map.zombie[self.num_zombie_update].seeing in [1,2]:
                 self.zombie_sprite[self.num_zombie_update] = Game_Character('images/Zombie_02.png',zombie=self.map.zombie[self.num_zombie_update])
             else:
                 self.zombie_sprite[self.num_zombie_update] = Game_Character('images/Zombie_01.png',zombie=self.map.zombie[self.num_zombie_update])
             self.num_zombie_update += 1
-            if self.num_zombie_update == NUM_ZOMBIE-6:
+            if self.num_zombie_update == NUM_ZOMBIE:
                 self.num_zombie_update = 0
+# detail about update zombie 2 zombie per time
+            self.map.zombie[self.num_zombie_update_02].update()
+            if self.map.zombie[self.num_zombie_update_02].seeing in [1,2]:
+                self.zombie_sprite[self.num_zombie_update_02] = Game_Character('images/Zombie_02.png',zombie=self.map.zombie[self.num_zombie_update_02])
+            else:
+                self.zombie_sprite[self.num_zombie_update_02] = Game_Character('images/Zombie_01.png',zombie=self.map.zombie[self.num_zombie_update_02])
+            self.num_zombie_update_02 += 1
+            if self.num_zombie_update_02 == NUM_ZOMBIE:
+                self.num_zombie_update_02 = 0
+# detail about update zombie 3 zombie per time
+            self.map.zombie[self.num_zombie_update_03].update()
+            if self.map.zombie[self.num_zombie_update_03].seeing in [1,2]:
+                self.zombie_sprite[self.num_zombie_update_03] = Game_Character('images/Zombie_02.png',zombie=self.map.zombie[self.num_zombie_update_03])
+            else:
+                self.zombie_sprite[self.num_zombie_update_03] = Game_Character('images/Zombie_01.png',zombie=self.map.zombie[self.num_zombie_update_03])
+            self.num_zombie_update_03 += 1
+            if self.num_zombie_update_03 == NUM_ZOMBIE:
+                self.num_zombie_update_03 = 0
 
     def time_out(self):
         output = "Do you have brain?"
@@ -282,7 +302,13 @@ class Game_Window(arcade.Window):
             self.map.board.event_draw()            
 
     def on_key_press(self, key, key_modifiers):
-        if self.current_state == "game_running":
+        print(key)
+        if key == 65307 and self.current_state == "interface":
+            exit(0)            
+            arcade.close_window()
+        elif key == 65307:
+            self.current_state = "interface"
+        elif self.current_state == "game_running":
             self.map.on_key_press(key, key_modifiers)
         elif self.current_state == "vs_game":
             self.map.on_key_press(key, key_modifiers)
